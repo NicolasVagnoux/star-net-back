@@ -56,7 +56,7 @@ CREATE TABLE `users` (
 -- Articles table
 CREATE TABLE `articles` (
     `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(80) NOT NULL,
+    `title` VARCHAR(80) NOT NULL,
     `idUser` INT NOT NULL,
     `mainImage` BLOB NOT NULL,
     `mainContent` TEXT NOT NULL,
