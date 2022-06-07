@@ -1,7 +1,14 @@
-// import { Express } from 'express';
+import { Express } from 'express';
+import articlesController from './controllers/articles';
 
-// const setupRoutes = (server: Express) => {
+const setupRoutes = (server: Express) => {
+  /////ARTICLES
 
-// };
+  //   get articles
+  server.get('/api/articles', articlesController.getAllArticles);
 
-// export default setupRoutes;
+  //   get article by id
+  server.get('/api/articles/:idArticle', articlesController.getOneArticle);
+};
+
+export default setupRoutes;
