@@ -1,5 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
-import * as Article from '../models/article';
+import Article from '../models/article';
 
 // get all articles
 const getAllArticles = (async (
