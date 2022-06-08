@@ -17,4 +17,15 @@ const getArticleById = async (idArticle: number): Promise<IArticle> => {
   return results[0];
 };
 
-export { getAllArticles, getArticleById };
+// get articles by user //
+const getArticlesByUser = async (idUser: number): Promise<IArticle[]> => {
+  const results = await connection
+    .promise()
+    .query<IArticle[]>(
+      'SELECT articles.* FROM articles INNER JOIN bookmarks ON articles.id = bookmarks.idArticle WHERE bookmarks.idUser = ?',
+      [idUser]
+    );
+  return results[0];
+};
+
+export default { getAllArticles, getArticleById, getArticlesByUser };
