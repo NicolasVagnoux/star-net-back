@@ -4,7 +4,7 @@ import connection from '../db-config';
 /////// ARTICLES //
 // get articles //
 const getAllArticles = async (): Promise<IArticle[]> => {
-  let sql = `SELECT * FROM articles`;
+  const sql = `SELECT * FROM articles`;
   const results = await connection.promise().query<IArticle[]>(sql);
   return results[0];
 };
