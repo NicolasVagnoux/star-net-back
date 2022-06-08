@@ -4,3 +4,4 @@ export default interface ITheme extends RowDataPacket {
     id: number;
     name: string;
 }
+
