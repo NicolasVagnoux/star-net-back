@@ -5,4 +5,3 @@ export default interface ITheme extends RowDataPacket {
     name: string;
 }
 
-// coucou
