@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS `followedPackages`,
 `chosenCategories`,
 `articlesPackages`,
 `articlesCategories`,
+`packagesCategories`,
 `bookmarks`,
 `completedArticles`,
 `packages`,
@@ -58,7 +59,7 @@ CREATE TABLE `articles` (
     `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(80) NOT NULL,
     `idUser` INT NOT NULL,
-    `mainImage` BLOB NOT NULL,
+    `mainImage` VARCHAR(255) NOT NULL,
     `mainContent` TEXT NOT NULL,
     CONSTRAINT fk_articles_users FOREIGN KEY (`idUser`) REFERENCES users(`id`)
 );
@@ -101,6 +102,14 @@ CREATE TABLE `articlesCategories` (
     `idCategory` INT NOT NULL,
     CONSTRAINT fk_articlesCategories_articles FOREIGN KEY (idArticle) REFERENCES articles(id),
     CONSTRAINT fk_articlesCategories_categories FOREIGN KEY (idCategory) REFERENCES categories(id)
+);
+-- PackagesCategories table
+CREATE TABLE `packagesCategories` (
+    `id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `idPackage` INT NOT NULL,
+    `idCategory` INT NOT NULL,
+    CONSTRAINT fk_packagesCategories_packages FOREIGN KEY (idPackage) REFERENCES packages(id),
+    CONSTRAINT fk_packagesCategories_categories FOREIGN KEY (idCategory) REFERENCES categories(id)
 );
 -- ArticlesPackages table
 CREATE TABLE `articlesPackages` (
