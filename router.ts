@@ -1,6 +1,7 @@
 import { Express } from 'express';
 import articlesController from './controllers/articles';
 import usersController from './controllers/users';
+import packagesController from './controllers/packages';
 
 const setupRoutes = (server: Express) => {
   ///// USERS /////
@@ -20,12 +21,30 @@ const setupRoutes = (server: Express) => {
   // GET article by id
   server.get('/api/articles/:idArticle', articlesController.getOneArticle);
 
-  // GET articles by user (bookmark)
+  // GET articles by user (bookmarks)
   server.get(
     '/api/users/:idUser/articles',
     usersController.userExists,
     usersController.getArticlesByUser
   );
+
+  //GET articles by package (articlesPackages)
+  server.get('/api/packages/:idPackage/articles', packagesController.getArticlesByPackage);
+
+  ///// PACKAGES /////
+
+  // GET packages
+  server.get('/api/packages', packagesController.getAllPackages);
+
+  // GET packages by User (followedPackages)
+  server.get('/api/users/:idUser/packages',
+  usersController.userExists,
+  usersController.getPackagesByUser);
+
+  ///// CATEGORIES /////
+
+  // GET categories by package
+  server.get('/api/packages/:idPackage/categories', packagesController.getCategoriesByPackage)
 };
 
 export default setupRoutes;

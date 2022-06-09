@@ -9,7 +9,7 @@ const getAllArticles = async (): Promise<IArticle[]> => {
   return results[0];
 };
 
-// get article by id //
+// get article by id
 const getArticleById = async (idArticle: number): Promise<IArticle> => {
   const [results] = await connection
     .promise()
@@ -17,7 +17,7 @@ const getArticleById = async (idArticle: number): Promise<IArticle> => {
   return results[0];
 };
 
-// get articles by user //
+// get articles by user
 const getArticlesByUser = async (idUser: number): Promise<IArticle[]> => {
   const results = await connection
     .promise()
@@ -28,4 +28,15 @@ const getArticlesByUser = async (idUser: number): Promise<IArticle[]> => {
   return results[0];
 };
 
-export default { getAllArticles, getArticleById, getArticlesByUser };
+// GET articles by package
+const getArticlesByPackage = async (idPackage: number): Promise<IArticle[]> => {
+  const results = await connection
+    .promise()
+    .query<IArticle[]>(
+      'SELECT articles.* FROM articles INNER JOIN articlesPackages ON articles.id = articlesPackages.idArticle WHERE articlesPackages.idPackage = ?',
+      [idPackage]
+    );
+  return results[0];
+};
+
+export default { getAllArticles, getArticleById, getArticlesByUser, getArticlesByPackage };
