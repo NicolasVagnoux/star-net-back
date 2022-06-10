@@ -4,7 +4,7 @@ import connection from '../db-config';
 /////// ARTICLES //
 // get articles //
 const getAllArticles = async (): Promise<IArticle[]> => {
-  const sql = `SELECT * FROM articles`;
+  const sql = `SELECT title, idUser, mainImage, mainContent, DATE_FORMAT(creationDate, '%d/%m/%Y') AS creationDate, DATE_FORMAT(lastUpdateDate, '%d/%m/%Y') AS lastUpdateDate FROM articles`;
   const results = await connection.promise().query<IArticle[]>(sql);
   return results[0];
 };
@@ -13,7 +13,7 @@ const getAllArticles = async (): Promise<IArticle[]> => {
 const getArticleById = async (idArticle: number): Promise<IArticle> => {
   const [results] = await connection
     .promise()
-    .query<IArticle[]>('SELECT * FROM articles WHERE id = ?', [idArticle]);
+    .query<IArticle[]>('SELECT title, idUser, mainImage, mainContent, DATE_FORMAT(creationDate, "%d/%m/%Y") AS creationDate, DATE_FORMAT(lastUpdateDate, "%d/%m/%Y") AS lastUpdateDate FROM articles WHERE id = ?', [idArticle]);
   return results[0];
 };
 
@@ -22,7 +22,7 @@ const getArticlesByUser = async (idUser: number): Promise<IArticle[]> => {
   const results = await connection
     .promise()
     .query<IArticle[]>(
-      'SELECT articles.* FROM articles INNER JOIN bookmarks ON articles.id = bookmarks.idArticle WHERE bookmarks.idUser = ?',
+      'SELECT a.title, a.idUser, a.mainImage, a.mainContent, DATE_FORMAT(a.creationDate, "%d/%m/%Y") AS creationDate, DATE_FORMAT(a.lastUpdateDate, "%d/%m/%Y") AS lastUpdateDate FROM articles a INNER JOIN bookmarks ON a.id = bookmarks.idArticle WHERE bookmarks.idUser = ?',
       [idUser]
     );
   return results[0];
@@ -33,7 +33,7 @@ const getArticlesByPackage = async (idPackage: number): Promise<IArticle[]> => {
   const results = await connection
     .promise()
     .query<IArticle[]>(
-      'SELECT articles.* FROM articles INNER JOIN articlesPackages ON articles.id = articlesPackages.idArticle WHERE articlesPackages.idPackage = ?',
+      'SELECT a.title, a.idUser, a.mainImage, a.mainContent, DATE_FORMAT(a.creationDate, "%d/%m/%Y") AS creationDate, DATE_FORMAT(a.lastUpdateDate, "%d/%m/%Y") AS lastUpdateDate FROM articles a INNER JOIN articlesPackages ON a.id = articlesPackages.idArticle WHERE articlesPackages.idPackage = ?',
       [idPackage]
     );
   return results[0];

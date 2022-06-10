@@ -3,5 +3,4 @@ node_modules/
 package-lock.json
 .DS_Store
 **/*.js
-reset-db.sql
-reset-db-fill.sql
+**/*.sql
