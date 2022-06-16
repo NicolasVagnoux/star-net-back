@@ -9,6 +9,7 @@ export default interface IUser extends RowDataPacket {
     registrationDate: Date; //à vérifier
     userPicture: File; //à vérifier
     password: string;
+    hashedPassword: string;
     idTheme: number;
     idLanguage: number;
     idRight: number;

@@ -6,4 +6,6 @@ export default interface IArticle extends RowDataPacket {
     idUser: number;
     mainImage: File; //à vérifier
     mainContent: string;
+    creationDate: Date;
+    lastUpdateDate: Date;
 }
