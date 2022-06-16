@@ -25,7 +25,7 @@ const getUserByEmail = async (email: string): Promise<IUser> => {
   const [results] = await connection
     .promise()
     .query<IUser[]>(
-      'SELECT id, firstName, lastName, phoneNumber, email, registrationDate, userPicture, idTheme, idLanguage, idRight FROM users WHERE email = ?',
+      'SELECT id, firstName, lastName, phoneNumber, email, hashedPassword, registrationDate, userPicture, idTheme, idLanguage, idRight FROM users WHERE email = ?',
       [email]
     );
   return results[0];
