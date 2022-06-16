@@ -2,6 +2,7 @@ import { Express } from 'express';
 import articlesController from './controllers/articles';
 import usersController from './controllers/users';
 import packagesController from './controllers/packages';
+import authController from './controllers/auth';
 
 const setupRoutes = (server: Express) => {
   ///// USERS /////
@@ -17,7 +18,13 @@ const setupRoutes = (server: Express) => {
   usersController.validateUser,
   usersController.emailIsFree,
   usersController.addUser
-  )
+  );
+
+  ///// LOGIN /////
+  server.post('/api/login',
+  authController.validateLogin,
+  authController.login
+  );
 
   ///// ARTICLES /////
   // GET articles
