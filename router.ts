@@ -35,6 +35,7 @@ const setupRoutes = (server: Express) => {
   server.get(
     '/api/users/:idUser/articles',
     usersController.userExists,
+    authController.getCurrentSession,
     usersController.getArticlesByUser
   );
   //GET articles by package (articlesPackages)
