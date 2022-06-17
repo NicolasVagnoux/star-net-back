@@ -14,10 +14,16 @@ const setupRoutes = (server: Express) => {
     usersController.userExists,
     usersController.getUserById
   );
+  // POST user
   server.post('/api/users',
   usersController.validateUser,
   usersController.emailIsFree,
   usersController.addUser
+  );
+  // DELETE user
+  server.delete('/api/users/:idUser',
+  usersController.userExists,
+  usersController.deleteUser
   );
 
   ///// LOGIN /////
