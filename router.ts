@@ -14,10 +14,16 @@ const setupRoutes = (server: Express) => {
     usersController.userExists,
     usersController.getUserById
   );
+  // POST user
   server.post('/api/users',
   usersController.validateUser,
   usersController.emailIsFree,
   usersController.addUser
+  );
+  // DELETE user
+  server.delete('/api/users/:idUser',
+  usersController.userExists,
+  usersController.deleteUser
   );
 
   ///// LOGIN /////
@@ -30,11 +36,14 @@ const setupRoutes = (server: Express) => {
   // GET articles
   server.get('/api/articles', articlesController.getAllArticles);
   // GET article by id
-  server.get('/api/articles/:idArticle', articlesController.getOneArticle);
+  server.get('/api/articles/:idArticle', 
+  authController.getCurrentSession,
+  articlesController.getOneArticle);
   // GET articles by user (bookmarks)
   server.get(
     '/api/users/:idUser/articles',
     usersController.userExists,
+    authController.getCurrentSession,
     usersController.getArticlesByUser
   );
   //GET articles by package (articlesPackages)
@@ -42,7 +51,9 @@ const setupRoutes = (server: Express) => {
 
   ///// PACKAGES /////
   // GET packages
-  server.get('/api/packages', packagesController.getAllPackages);
+  server.get('/api/packages',
+  authController.getCurrentSession, 
+  packagesController.getAllPackages);
   // GET packages by User (followedPackages)
   server.get('/api/users/:idUser/packages',
   usersController.userExists,

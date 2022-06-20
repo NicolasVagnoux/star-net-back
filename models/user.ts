@@ -40,4 +40,11 @@ const addUser = async (user : IUser) : Promise<number> => {
   return results[0].insertId;
 };
 
-export default { getAllUsers, getUserById, getUserByEmail, addUser };
+const deleteUser = async (idUser : number) : Promise<boolean> => {
+  const results = await connection
+  .promise()
+  .query<ResultSetHeader>('DELETE FROM users WHERE id = ?', [idUser]);
+  return results[0].affectedRows === 1; //boolean
+}
+
+export default { getAllUsers, getUserById, getUserByEmail, addUser, deleteUser };
