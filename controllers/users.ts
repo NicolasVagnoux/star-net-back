@@ -112,7 +112,7 @@ const getPackagesByUser = async (
   }
 };
 
-//POST users
+//POST user
 const addUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
       const user = req.body as IUser; // On prend le body qu'on met dans une constante user.
@@ -123,4 +123,20 @@ const addUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default { userExists, validateUser, emailIsFree, getAllUsers, getUserById, getArticlesByUser, getPackagesByUser, addUser };
+//DELETE user
+const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { idUser } = req.params;
+    const user = await User.getUserById(Number(idUser));
+    const userDeleted = await User.deleteUser(Number(idUser)); //userDeleted = boolean
+    if(userDeleted) {
+      res.status(200).send(user); //needed by react-admin
+    } else {
+      throw new ErrorHandler(500, 'User cannot be deleted');
+    }
+  } catch(err) {
+    next(err);
+  }
+};
+
+export default { userExists, validateUser, emailIsFree, getAllUsers, getUserById, getArticlesByUser, getPackagesByUser, addUser, deleteUser };
