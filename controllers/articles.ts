@@ -1,5 +1,6 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import Article from '../models/article';
+import Category from '../models/category';
 
 // get all articles
 const getAllArticles = (async (
@@ -30,4 +31,19 @@ const getOneArticle = (async (
   }
 }) as RequestHandler;
 
-export default { getAllArticles, getOneArticle };
+// GET categories by article
+const getCategoriesByArticle = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idArticle } = req.params;
+    const categories = await Category.getCategoriesByArticle(Number(idArticle));
+    return res.status(200).json(categories);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
+export default { getAllArticles, getOneArticle, getCategoriesByArticle };
