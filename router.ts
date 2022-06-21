@@ -15,30 +15,31 @@ const setupRoutes = (server: Express) => {
     usersController.getUserById
   );
   // POST user
-  server.post('/api/users',
-  usersController.validateUser,
-  usersController.emailIsFree,
-  usersController.addUser
+  server.post(
+    '/api/users',
+    usersController.validateUser,
+    usersController.emailIsFree,
+    usersController.addUser
   );
   // DELETE user
-  server.delete('/api/users/:idUser',
-  usersController.userExists,
-  usersController.deleteUser
+  server.delete(
+    '/api/users/:idUser',
+    usersController.userExists,
+    usersController.deleteUser
   );
 
   ///// LOGIN /////
-  server.post('/api/login',
-  authController.validateLogin,
-  authController.login
-  );
+  server.post('/api/login', authController.validateLogin, authController.login);
 
   ///// ARTICLES /////
   // GET articles
   server.get('/api/articles', articlesController.getAllArticles);
   // GET article by id
-  server.get('/api/articles/:idArticle', 
-  authController.getCurrentSession,
-  articlesController.getOneArticle);
+  server.get(
+    '/api/articles/:idArticle',
+    authController.getCurrentSession,
+    articlesController.getOneArticle
+  );
   // GET articles by user (bookmarks)
   server.get(
     '/api/users/:idUser/articles',
@@ -47,21 +48,36 @@ const setupRoutes = (server: Express) => {
     usersController.getArticlesByUser
   );
   //GET articles by package (articlesPackages)
-  server.get('/api/packages/:idPackage/articles', packagesController.getArticlesByPackage);
+  server.get(
+    '/api/packages/:idPackage/articles',
+    packagesController.getArticlesByPackage
+  );
 
   ///// PACKAGES /////
   // GET packages
-  server.get('/api/packages',
-  authController.getCurrentSession, 
-  packagesController.getAllPackages);
+  server.get(
+    '/api/packages',
+    authController.getCurrentSession,
+    packagesController.getAllPackages
+  );
   // GET packages by User (followedPackages)
-  server.get('/api/users/:idUser/packages',
-  usersController.userExists,
-  usersController.getPackagesByUser);
+  server.get(
+    '/api/users/:idUser/packages',
+    usersController.userExists,
+    usersController.getPackagesByUser
+  );
 
   ///// CATEGORIES /////
   // GET categories by package
-  server.get('/api/packages/:idPackage/categories', packagesController.getCategoriesByPackage)
-};
+  server.get(
+    '/api/packages/:idPackage/categories',
+    packagesController.getCategoriesByPackage
+  );
 
+  // GET categories by article
+  server.get(
+    '/api/articles/:idArticle/categories',
+    articlesController.getCategoriesByArticle
+  );
+};
 export default setupRoutes;
