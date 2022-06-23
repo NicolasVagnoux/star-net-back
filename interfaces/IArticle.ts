@@ -2,9 +2,9 @@ import { RowDataPacket } from 'mysql2';
 
 export default interface IArticle extends RowDataPacket {
     id: number;
-    name: string;
+    title: string;
     idUser: number;
-    mainImage: File; //à vérifier
+    mainImage: string;
     mainContent: string;
     creationDate: Date;
     lastUpdateDate: Date;
