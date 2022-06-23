@@ -40,11 +40,70 @@ const addUser = async (user : IUser) : Promise<number> => {
   return results[0].insertId;
 };
 
+const updateUser = async (idUser : number, user : IUser) : Promise<boolean> => {
+  let sql = 'UPDATE users SET ';
+  const sqlValues : Array<string | number> = [];
+  let oneValue  = false;
+  if (user.firstName) {
+    sql += 'firstName = ?';
+    sqlValues.push(user.firstName);
+    oneValue = true;
+}
+if (user.lastName) {
+    sql += oneValue ? ' , lastName = ? ' : ' lastName = ? ';
+    sqlValues.push(user.lastName);
+    oneValue = true;
+}
+if (user.phoneNumber) {
+  sql += oneValue ? ' , phoneNumber = ? ' : ' phoneNumber = ? ';
+  sqlValues.push(user.phoneNumber);
+  oneValue = true;
+}
+if (user.email) {
+  sql += oneValue ? ' , email = ? ' : ' email = ? ';
+  sqlValues.push(user.email);
+  oneValue = true;
+}
+if (user.userPicture) {
+  sql += oneValue ? ' , userPicture = ? ' : ' userPicture = ? ';
+  sqlValues.push(user.userPicture);
+  oneValue = true;
+}
+if (user.password) {
+  sql += oneValue ? ', hashedPassword = ? ' : ' hashedPassword = ? ';
+  const hashedPassword : string = await Auth.hashPassword(user.password);
+  sqlValues.push(hashedPassword);
+  oneValue = true;
+}
+if (user.idTheme) {
+  sql += oneValue ? ' , idTheme = ? ' : ' idTheme = ? ';
+  sqlValues.push(user.idTheme);
+  oneValue = true;
+}
+if (user.idLanguage) {
+  sql += oneValue ? ' , idLanguage = ? ' : ' idLanguage = ? ';
+  sqlValues.push(user.idLanguage);
+  oneValue = true;
+}
+if (user.idRight) {
+  sql += oneValue ? ' , idRight = ? ' : ' idRight = ? ';
+  sqlValues.push(user.idRight);
+  oneValue = true;
+}
+sql += ' WHERE id = ?';
+    sqlValues.push(idUser);
+
+    const results = await connection
+    .promise()
+    .query<ResultSetHeader>(sql, sqlValues);
+    return results[0].affectedRows === 1;
+};
+
 const deleteUser = async (idUser : number) : Promise<boolean> => {
   const results = await connection
   .promise()
   .query<ResultSetHeader>('DELETE FROM users WHERE id = ?', [idUser]);
   return results[0].affectedRows === 1; //boolean
-}
+};
 
-export default { getAllUsers, getUserById, getUserByEmail, addUser, deleteUser };
+export default { getAllUsers, getUserById, getUserByEmail, addUser, updateUser, deleteUser };
