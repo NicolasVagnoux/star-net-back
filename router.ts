@@ -3,7 +3,6 @@ import articlesController from './controllers/articles';
 import usersController from './controllers/users';
 import packagesController from './controllers/packages';
 import authController from './controllers/auth';
-import bookmarksController from './controllers/bookmarks';
 
 const setupRoutes = (server: Express) => {
   
@@ -23,6 +22,11 @@ const setupRoutes = (server: Express) => {
     usersController.emailIsFree,
     usersController.addUser
   );
+  // POST bookmark by user
+  server.post('/api/users/:idUser/bookmarks', 
+    authController.getCurrentSession,
+    usersController.addBookmarkByUser
+    );
   // PUT user
   server.put(
     '/api/users/:idUser',
@@ -35,6 +39,11 @@ const setupRoutes = (server: Express) => {
     '/api/users/:idUser',
     usersController.userExists,
     usersController.deleteUser
+  );
+  // DELETE bookmark by user
+  server.delete('/api/users/:idUser/bookmarks/:idArticle',
+  authController.getCurrentSession,
+  usersController.deleteBookmarkByUser
   );
 
   ///// LOGIN /////
@@ -102,18 +111,6 @@ const setupRoutes = (server: Express) => {
   server.get(
     '/api/articles/:idArticle/categories',
     articlesController.getCategoriesByArticle
-  );
-
-  ///// BOOKMARKS /////
-  // POST bookmark
-  server.post('/api/bookmarks', 
-  authController.getCurrentSession,
-  bookmarksController.addBookmark
-  );
-  // DELETE bookmark
-  server.delete('/api/bookmarks/:idBookmark',
-  authController.getCurrentSession,
-  bookmarksController.deleteBookmark
   );
 };
 export default setupRoutes;
