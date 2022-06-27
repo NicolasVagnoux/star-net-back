@@ -3,8 +3,10 @@ import { ErrorHandler } from '../helpers/errors';
 import Article from '../models/article';
 import User from '../models/user';
 import Package from '../models/package';
+import Bookmark from '../models/bookmark';
 import Joi from 'joi';
 import IUser from '../interfaces/IUser';
+import IBookmark from '../interfaces/IBookmark';
 
 // [MIDDLEWARE] Check if user exists
 const userExists = (async (req: Request, res: Response, next: NextFunction) => {
@@ -123,6 +125,19 @@ const addUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+//POST bookmark by user
+const addBookmarkByUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+      const { idUser } = req.params;
+      const bookmark = req.body as IBookmark;
+      bookmark.idUser = Number(idUser);
+      bookmark.id = await Bookmark.addBookmark(Number(idUser), bookmark);
+      res.status(201).json(bookmark);
+  } catch(err) {
+      next(err);
+  }
+};
+
 //PUT user
 const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -155,4 +170,15 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default { userExists, validateUser, emailIsFree, getAllUsers, getUserById, getArticlesByUser, getPackagesByUser, addUser, updateUser, deleteUser };
+//DELETE bookmark by user
+const deleteBookmarkByUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+      const { idUser, idArticle } = req.params;
+      const bookmarkDeleted = await Bookmark.deleteBookmark(Number(idUser), Number(idArticle)); //boolean
+      bookmarkDeleted ? res.sendStatus(204) : res.sendStatus(500);
+  } catch(err) {
+      next(err);
+  }
+};
+
+export default { userExists, validateUser, emailIsFree, getAllUsers, getUserById, getArticlesByUser, getPackagesByUser, addUser, addBookmarkByUser, updateUser, deleteUser, deleteBookmarkByUser };
