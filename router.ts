@@ -5,6 +5,7 @@ import packagesController from './controllers/packages';
 import authController from './controllers/auth';
 
 const setupRoutes = (server: Express) => {
+  
   ///// USERS /////
   // GET all users
   server.get('/api/users', usersController.getAllUsers);
@@ -58,6 +59,22 @@ const setupRoutes = (server: Express) => {
   server.get(
     '/api/packages/:idPackage/articles',
     packagesController.getArticlesByPackage
+  );
+  //POST article
+  server.post('/api/articles',
+  articlesController.validateArticle,
+  articlesController.addArticle
+  );
+  //PUT article
+  server.put('/api/articles/:idArticle',
+  articlesController.validateArticle,
+  articlesController.articleExists,
+  articlesController.updateArticle
+  );
+  //DELETE article
+  server.delete('/api/articles/:idArticle',
+  articlesController.articleExists,
+  articlesController.deleteArticle
   );
 
   ///// PACKAGES /////
