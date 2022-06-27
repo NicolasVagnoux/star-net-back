@@ -123,6 +123,22 @@ const addUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+//PUT user
+const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { idUser } = req.params;
+    const userUpdated = await User.updateUser(Number(idUser), req.body as IUser); //userUpdated is a boolean, returned by the model
+    if (userUpdated) {
+      const user = await User.getUserById(Number(idUser));
+      res.status(200).send(user); // react-admin needs this response
+  } else {
+      throw new ErrorHandler(500, 'User cannot be updated');
+  }
+  } catch(err) {
+    next(err);
+  }
+};
+
 //DELETE user
 const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -139,4 +155,4 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export default { userExists, validateUser, emailIsFree, getAllUsers, getUserById, getArticlesByUser, getPackagesByUser, addUser, deleteUser };
+export default { userExists, validateUser, emailIsFree, getAllUsers, getUserById, getArticlesByUser, getPackagesByUser, addUser, updateUser, deleteUser };
