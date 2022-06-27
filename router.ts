@@ -3,6 +3,7 @@ import articlesController from './controllers/articles';
 import usersController from './controllers/users';
 import packagesController from './controllers/packages';
 import authController from './controllers/auth';
+import bookmarksController from './controllers/bookmarks';
 
 const setupRoutes = (server: Express) => {
   
@@ -97,11 +98,22 @@ const setupRoutes = (server: Express) => {
     '/api/packages/:idPackage/categories',
     packagesController.getCategoriesByPackage
   );
-
   // GET categories by article
   server.get(
     '/api/articles/:idArticle/categories',
     articlesController.getCategoriesByArticle
+  );
+
+  ///// BOOKMARKS /////
+  // POST bookmark
+  server.post('/api/bookmarks', 
+  authController.getCurrentSession,
+  bookmarksController.addBookmark
+  );
+  // DELETE bookmark
+  server.delete('/api/bookmarks/:idBookmark',
+  authController.getCurrentSession,
+  bookmarksController.deleteBookmark
   );
 };
 export default setupRoutes;
