@@ -100,6 +100,12 @@ const setupRoutes = (server: Express) => {
     usersController.userExists,
     usersController.getPackagesByUser
   );
+  // POST article by package
+  server.post('/api/packages/:idPackage/articles',
+  packagesController.packageExists,
+  packagesController.articlePackageExists,
+  packagesController.addArticleByPackage
+  );
 
   ///// CATEGORIES /////
   // GET categories by package

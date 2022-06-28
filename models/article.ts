@@ -49,6 +49,15 @@ const addArticle = async (article : IArticle) : Promise<number> => {
   return results[0].insertId;
 };
 
+//POST article by package
+const addArticleByPackage = async (idPackage: number, articlePackage: IArticle) => {
+  const results = await connection
+  .promise()
+  .query<ResultSetHeader>('INSERT INTO articlesPackages (idPackage, idArticle) VALUES (?,?)',
+  [idPackage, articlePackage.idArticle]);
+  return results[0].insertId;
+}
+
 //PUT article
 const updateArticle = async (idArticle : number, article : IArticle) : Promise<boolean> => {
   let sql = 'UPDATE articles SET ';
@@ -95,4 +104,4 @@ const deleteArticle = async (idArticle : number) : Promise<boolean> => {
   return results[0].affectedRows === 1;
 };
 
-export default { getAllArticles, getArticleById, getArticlesByUser, getArticlesByPackage, addArticle, updateArticle, deleteArticle };
+export default { getAllArticles, getArticleById, getArticlesByUser, getArticlesByPackage, addArticle, addArticleByPackage, updateArticle, deleteArticle };
