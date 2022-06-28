@@ -52,6 +52,11 @@ const setupRoutes = (server: Express) => {
   authController.getCurrentSession,
   usersController.deleteBookmarkByUser
   );
+  // GET bookmark by user and article
+  server.get('/api/users/:idUser/bookmarks/:idArticle',
+  authController.getCurrentSession,
+  usersController.getBookmarkByUserAndArticle
+  );
 
   ///// LOGIN /////
   server.post('/api/login', authController.validateLogin, authController.login);
@@ -106,6 +111,12 @@ const setupRoutes = (server: Express) => {
     '/api/users/:idUser/packages',
     usersController.userExists,
     usersController.getPackagesByUser
+  );
+  // POST article by package
+  server.post('/api/packages/:idPackage/articles',
+  packagesController.packageExists,
+  packagesController.articlePackageExists,
+  packagesController.addArticleByPackage
   );
 
   ///// CATEGORIES /////
