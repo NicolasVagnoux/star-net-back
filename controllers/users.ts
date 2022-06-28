@@ -99,6 +99,17 @@ const getArticlesByUser = async (
   }
 };
 
+//GET bookmark by user and article
+const getBookmarkByUserAndArticle = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { idUser, idArticle } = req.params;
+    const bookmark = await Bookmark.getBookmarkByUserAndArticle(Number(idUser), Number(idArticle));
+    return res.status(200).json(bookmark);
+  } catch(err) {
+    next(err);
+  }
+};
+
 // GET packages by user (followedPackages)
 const getPackagesByUser = async (
   req: Request,
@@ -181,4 +192,4 @@ const deleteBookmarkByUser = async (req: Request, res: Response, next: NextFunct
   }
 };
 
-export default { userExists, validateUser, emailIsFree, getAllUsers, getUserById, getArticlesByUser, getPackagesByUser, addUser, addBookmarkByUser, updateUser, deleteUser, deleteBookmarkByUser };
+export default { userExists, validateUser, emailIsFree, getAllUsers, getUserById, getArticlesByUser, getBookmarkByUserAndArticle, getPackagesByUser, addUser, addBookmarkByUser, updateUser, deleteUser, deleteBookmarkByUser };
