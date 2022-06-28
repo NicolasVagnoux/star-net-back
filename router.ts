@@ -45,6 +45,11 @@ const setupRoutes = (server: Express) => {
   authController.getCurrentSession,
   usersController.deleteBookmarkByUser
   );
+  // GET bookmark by user and article
+  server.get('/api/users/:idUser/bookmarks/:idArticle',
+  authController.getCurrentSession,
+  usersController.getBookmarkByUserAndArticle
+  );
 
   ///// LOGIN /////
   server.post('/api/login', authController.validateLogin, authController.login);
