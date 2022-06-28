@@ -4,9 +4,11 @@ import Article from '../models/article';
 import User from '../models/user';
 import Package from '../models/package';
 import Bookmark from '../models/bookmark';
+import Comment from '../models/comment';
 import Joi from 'joi';
 import IUser from '../interfaces/IUser';
 import IBookmark from '../interfaces/IBookmark';
+import IComment from '../interfaces/IComment';
 
 // [MIDDLEWARE] Check if user exists
 const userExists = (async (req: Request, res: Response, next: NextFunction) => {
@@ -138,6 +140,19 @@ const addBookmarkByUser = async (req: Request, res: Response, next: NextFunction
   }
 };
 
+//POST comment by user
+const addCommentByUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+      const { idUser } = req.params;
+      const comment = req.body as IComment;
+      comment.idUser = Number(idUser);
+      comment.id = await Comment.addComment(Number(idUser), comment);
+      res.status(201).json(comment);
+  } catch(err) {
+      next(err);
+  }
+};
+
 //PUT user
 const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -181,4 +196,4 @@ const deleteBookmarkByUser = async (req: Request, res: Response, next: NextFunct
   }
 };
 
-export default { userExists, validateUser, emailIsFree, getAllUsers, getUserById, getArticlesByUser, getPackagesByUser, addUser, addBookmarkByUser, updateUser, deleteUser, deleteBookmarkByUser };
+export default { userExists, validateUser, emailIsFree, getAllUsers, getUserById, getArticlesByUser, getPackagesByUser, addUser, addBookmarkByUser, addCommentByUser ,updateUser, deleteUser, deleteBookmarkByUser };
