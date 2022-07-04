@@ -135,6 +135,13 @@ const setupRoutes = (server: Express) => {
     packagesController.addArticleByPackage
   );
 
+  // POST completed article by user
+  server.post(
+    '/api/users/:idUser/completedArticles',
+    authController.getCurrentSession,
+    usersController.addCompletedArticleByUser
+  );
+
   ///// CATEGORIES /////
   // GET categories by package
   server.get(

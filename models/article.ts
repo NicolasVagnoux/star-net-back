@@ -83,6 +83,21 @@ const addArticleByPackage = async (
   return results[0].insertId;
 };
 
+// POST completed article by user and package
+
+const addCompletedArticleByUser = async (
+  idUser: number,
+  completedArticle: ICompletedArticle
+): Promise<number> => {
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>(
+      'INSERT INTO completedArticles (idUser, idArticle, rating) VALUES (?, ?, ?)',
+      [idUser, completedArticle.idArticle, completedArticle.rating]
+    );
+  return results[0].insertId;
+};
+
 //PUT article
 const updateArticle = async (
   idArticle: number,
@@ -145,6 +160,7 @@ export default {
   getCompletedArticlesByUserAndPackage,
   addArticle,
   addArticleByPackage,
+  addCompletedArticleByUser,
   updateArticle,
   deleteArticle,
 };
