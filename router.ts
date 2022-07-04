@@ -5,7 +5,6 @@ import packagesController from './controllers/packages';
 import authController from './controllers/auth';
 
 const setupRoutes = (server: Express) => {
-  
   ///// USERS /////
   // GET all users
   server.get('/api/users', usersController.getAllUsers);
@@ -23,15 +22,17 @@ const setupRoutes = (server: Express) => {
     usersController.addUser
   );
   // POST bookmark by user
-  server.post('/api/users/:idUser/bookmarks', 
+  server.post(
+    '/api/users/:idUser/bookmarks',
     authController.getCurrentSession,
     usersController.addBookmarkByUser
-    );
+  );
 
   // POST comments by user
-  server.post('/api/users/:idUser/comments', 
-  authController.getCurrentSession,
-  usersController.addCommentByUser
+  server.post(
+    '/api/users/:idUser/comments',
+    authController.getCurrentSession,
+    usersController.addCommentByUser
   );
 
   // PUT user
@@ -40,7 +41,7 @@ const setupRoutes = (server: Express) => {
     usersController.validateUser,
     usersController.userExists,
     usersController.updateUser
-  )
+  );
   // DELETE user
   server.delete(
     '/api/users/:idUser',
@@ -48,14 +49,16 @@ const setupRoutes = (server: Express) => {
     usersController.deleteUser
   );
   // DELETE bookmark by user
-  server.delete('/api/users/:idUser/bookmarks/:idArticle',
-  authController.getCurrentSession,
-  usersController.deleteBookmarkByUser
+  server.delete(
+    '/api/users/:idUser/bookmarks/:idArticle',
+    authController.getCurrentSession,
+    usersController.deleteBookmarkByUser
   );
   // GET bookmark by user and article
-  server.get('/api/users/:idUser/bookmarks/:idArticle',
-  authController.getCurrentSession,
-  usersController.getBookmarkByUserAndArticle
+  server.get(
+    '/api/users/:idUser/bookmarks/:idArticle',
+    authController.getCurrentSession,
+    usersController.getBookmarkByUserAndArticle
   );
 
   ///// LOGIN /////
@@ -82,21 +85,33 @@ const setupRoutes = (server: Express) => {
     '/api/packages/:idPackage/articles',
     packagesController.getArticlesByPackage
   );
+  //GET completedArticles by user and packages
+  server.get(
+    '/api/users/:idUser/packages/:idPackage/completedArticles',
+    usersController.userExists,
+    authController.getCurrentSession,
+    packagesController.packageExists,
+    packagesController.getCompletedArticlesByUserAndPackage
+  );
+
   //POST article
-  server.post('/api/articles',
-  articlesController.validateArticle,
-  articlesController.addArticle
+  server.post(
+    '/api/articles',
+    articlesController.validateArticle,
+    articlesController.addArticle
   );
   //PUT article
-  server.put('/api/articles/:idArticle',
-  articlesController.validateArticle,
-  articlesController.articleExists,
-  articlesController.updateArticle
+  server.put(
+    '/api/articles/:idArticle',
+    articlesController.validateArticle,
+    articlesController.articleExists,
+    articlesController.updateArticle
   );
   //DELETE article
-  server.delete('/api/articles/:idArticle',
-  articlesController.articleExists,
-  articlesController.deleteArticle
+  server.delete(
+    '/api/articles/:idArticle',
+    articlesController.articleExists,
+    articlesController.deleteArticle
   );
 
   ///// PACKAGES /////
@@ -113,10 +128,11 @@ const setupRoutes = (server: Express) => {
     usersController.getPackagesByUser
   );
   // POST article by package
-  server.post('/api/packages/:idPackage/articles',
-  packagesController.packageExists,
-  packagesController.articlePackageExists,
-  packagesController.addArticleByPackage
+  server.post(
+    '/api/packages/:idPackage/articles',
+    packagesController.packageExists,
+    packagesController.articlePackageExists,
+    packagesController.addArticleByPackage
   );
 
   ///// CATEGORIES /////

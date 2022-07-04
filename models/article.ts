@@ -1,4 +1,5 @@
 import IArticle from '../interfaces/IArticle';
+import ICompletedArticle from '../interfaces/ICompletedArticle';
 import connection from '../db-config';
 import { ResultSetHeader } from 'mysql2';
 
@@ -14,7 +15,10 @@ const getAllArticles = async (): Promise<IArticle[]> => {
 const getArticleById = async (idArticle: number): Promise<IArticle> => {
   const [results] = await connection
     .promise()
-    .query<IArticle[]>('SELECT id, title, idUser, mainImage, mainContent, DATE_FORMAT(creationDate, "%d/%m/%Y") AS creationDate, DATE_FORMAT(lastUpdateDate, "%d/%m/%Y") AS lastUpdateDate FROM articles WHERE id = ?', [idArticle]);
+    .query<IArticle[]>(
+      'SELECT id, title, idUser, mainImage, mainContent, DATE_FORMAT(creationDate, "%d/%m/%Y") AS creationDate, DATE_FORMAT(lastUpdateDate, "%d/%m/%Y") AS lastUpdateDate FROM articles WHERE id = ?',
+      [idArticle]
+    );
   return results[0];
 };
 
@@ -40,28 +44,52 @@ const getArticlesByPackage = async (idPackage: number): Promise<IArticle[]> => {
   return results[0];
 };
 
-//POST article
-const addArticle = async (article : IArticle) : Promise<number> => {
+// GET completedArticles by package
+const getCompletedArticlesByUserAndPackage = async (
+  idUser: number,
+  idPackage: number
+): Promise<ICompletedArticle[]> => {
   const results = await connection
-  .promise()
-  .query<ResultSetHeader>('INSERT INTO articles (title, idUser, mainImage, mainContent, creationDate, lastUpdateDate) VALUES (?,?,?,?,NOW(),NOW())',
-  [article.title, article.idUser, article.mainImage, article.mainContent]);
+    .promise()
+    .query<ICompletedArticle[]>(
+      'SELECT * FROM completedArticles AS CA INNER JOIN articlesPackages AS AP ON AP.idArticle = CA.idArticle WHERE CA.idUser= ? AND AP.idPackage = ? ',
+      [idUser, idPackage]
+    );
+  return results[0];
+};
+
+//POST article
+const addArticle = async (article: IArticle): Promise<number> => {
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>(
+      'INSERT INTO articles (title, idUser, mainImage, mainContent, creationDate, lastUpdateDate) VALUES (?,?,?,?,NOW(),NOW())',
+      [article.title, article.idUser, article.mainImage, article.mainContent]
+    );
   return results[0].insertId;
 };
 
 //POST article by package
-const addArticleByPackage = async (idPackage: number, articlePackage: IArticle) => {
+const addArticleByPackage = async (
+  idPackage: number,
+  articlePackage: IArticle
+) => {
   const results = await connection
-  .promise()
-  .query<ResultSetHeader>('INSERT INTO articlesPackages (idPackage, idArticle) VALUES (?,?)',
-  [idPackage, articlePackage.idArticle]);
+    .promise()
+    .query<ResultSetHeader>(
+      'INSERT INTO articlesPackages (idPackage, idArticle) VALUES (?,?)',
+      [idPackage, articlePackage.idArticle]
+    );
   return results[0].insertId;
-}
+};
 
 //PUT article
-const updateArticle = async (idArticle : number, article : IArticle) : Promise<boolean> => {
+const updateArticle = async (
+  idArticle: number,
+  article: IArticle
+): Promise<boolean> => {
   let sql = 'UPDATE articles SET ';
-  const sqlValues : Array<string | number> = [];
+  const sqlValues: Array<string | number> = [];
   let oneValue = false;
   if (article.title) {
     sql += 'title = ?';
@@ -83,25 +111,40 @@ const updateArticle = async (idArticle : number, article : IArticle) : Promise<b
     sqlValues.push(article.mainContent);
     oneValue = true;
   }
-  if (article.title || article.idUser || article.mainImage || article.mainContent) {
+  if (
+    article.title ||
+    article.idUser ||
+    article.mainImage ||
+    article.mainContent
+  ) {
     sql += ' , lastUpdateDate = NOW() ';
     oneValue = true;
   }
   sql += ' WHERE id = ?';
-    sqlValues.push(idArticle);
+  sqlValues.push(idArticle);
 
-    const results = await connection
+  const results = await connection
     .promise()
     .query<ResultSetHeader>(sql, sqlValues);
-    return results[0].affectedRows === 1;
-};
-
-//DELETE article
-const deleteArticle = async (idArticle : number) : Promise<boolean> => {
-  const results = await connection
-  .promise()
-  .query<ResultSetHeader>('DELETE FROM articles WHERE id = ?', [idArticle]);
   return results[0].affectedRows === 1;
 };
 
-export default { getAllArticles, getArticleById, getArticlesByUser, getArticlesByPackage, addArticle, addArticleByPackage, updateArticle, deleteArticle };
+//DELETE article
+const deleteArticle = async (idArticle: number): Promise<boolean> => {
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>('DELETE FROM articles WHERE id = ?', [idArticle]);
+  return results[0].affectedRows === 1;
+};
+
+export default {
+  getAllArticles,
+  getArticleById,
+  getArticlesByUser,
+  getArticlesByPackage,
+  getCompletedArticlesByUserAndPackage,
+  addArticle,
+  addArticleByPackage,
+  updateArticle,
+  deleteArticle,
+};
