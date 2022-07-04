@@ -27,6 +27,13 @@ const setupRoutes = (server: Express) => {
     authController.getCurrentSession,
     usersController.addBookmarkByUser
     );
+
+  // POST comments by user
+  server.post('/api/users/:idUser/comments', 
+  authController.getCurrentSession,
+  usersController.addCommentByUser
+  );
+
   // PUT user
   server.put(
     '/api/users/:idUser',
