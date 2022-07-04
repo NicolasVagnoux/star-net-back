@@ -128,6 +128,24 @@ const getBookmarkByUserAndArticle = async (
   }
 };
 
+//GET completed by user and article
+const getCompletedArticlesByUserAndArticle = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser, idArticle } = req.params;
+    const completedArticle = await Article.getCompletedArticlesByUserAndArticle(
+      Number(idUser),
+      Number(idArticle)
+    );
+    return res.status(200).json(completedArticle);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // GET packages by user (followedPackages)
 const getPackagesByUser = async (
   req: Request,
@@ -269,6 +287,7 @@ export default {
   getUserById,
   getArticlesByUser,
   getBookmarkByUserAndArticle,
+  getCompletedArticlesByUserAndArticle,
   getPackagesByUser,
   addUser,
   addCommentByUser,

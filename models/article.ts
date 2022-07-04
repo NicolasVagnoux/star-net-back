@@ -44,6 +44,14 @@ const getArticlesByPackage = async (idPackage: number): Promise<IArticle[]> => {
   return results[0];
 };
 
+// GET completedArticle by user and article
+const getCompletedArticlesByUserAndArticle = async (idUser : number, idArticle : number) : Promise<ICompletedArticle> => {
+  const [results] = await connection
+  .promise()
+  .query<ICompletedArticle[]>('SELECT * FROM completedArticles WHERE idUser = ? AND idArticle = ?', [idUser, idArticle]);
+  return results[0];
+};
+
 // GET completedArticles by package
 const getCompletedArticlesByUserAndPackage = async (
   idUser: number,
@@ -157,6 +165,7 @@ export default {
   getArticleById,
   getArticlesByUser,
   getArticlesByPackage,
+  getCompletedArticlesByUserAndArticle,
   getCompletedArticlesByUserAndPackage,
   addArticle,
   addArticleByPackage,
