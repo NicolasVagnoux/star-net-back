@@ -94,6 +94,13 @@ const setupRoutes = (server: Express) => {
     packagesController.getCompletedArticlesByUserAndPackage
   );
 
+  //GET completedArticles by user and article
+  server.get(
+    '/api/users/:idUser/completedArticles/:idArticle',
+    authController.getCurrentSession,
+    usersController.getCompletedArticlesByUserAndArticle
+  );
+
   //POST article
   server.post(
     '/api/articles',
