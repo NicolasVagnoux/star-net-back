@@ -48,7 +48,9 @@ const getAllArticles = (async (
   next: NextFunction
 ) => {
   try {
-    const articles = await Article.getAllArticles();
+    const titleFilter = req.query.titleFilter as string;
+    const tagFilter = req.query.tagFilter as string;
+    const articles = await Article.getAllArticles(titleFilter, tagFilter);
     return res.status(200).json(articles);
   } catch (err) {
     next(err);

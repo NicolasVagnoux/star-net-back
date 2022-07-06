@@ -1,5 +1,14 @@
 import ICategory from '../interfaces/IArticle';
 import connection from '../db-config';
+import IArticleCategory from '../interfaces/IArticleCategory';
+
+// GET all categories
+const getAllCategories = async () : Promise<IArticleCategory[]> => {
+  const results = await connection
+  .promise()
+  .query<IArticleCategory[]>('SELECT * FROM categories');
+  return results[0];
+};
 
 // GET categories by package
 const getCategoriesByPackage = async (
@@ -28,4 +37,4 @@ const getCategoriesByArticle = async (
   return results[0];
 };
 
-export default { getCategoriesByPackage, getCategoriesByArticle };
+export default { getAllCategories, getCategoriesByPackage, getCategoriesByArticle };

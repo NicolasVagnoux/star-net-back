@@ -3,6 +3,7 @@ import articlesController from './controllers/articles';
 import usersController from './controllers/users';
 import packagesController from './controllers/packages';
 import authController from './controllers/auth';
+import categoriesController from './controllers/categories';
 
 const setupRoutes = (server: Express) => {
   ///// USERS /////
@@ -157,6 +158,8 @@ const setupRoutes = (server: Express) => {
   );
 
   ///// CATEGORIES /////
+  // GET all categories 
+  server.get('/api/categories', categoriesController.getAllCategories);
   // GET categories by package
   server.get(
     '/api/packages/:idPackage/categories',
