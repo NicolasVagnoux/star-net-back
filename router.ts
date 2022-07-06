@@ -121,6 +121,13 @@ const setupRoutes = (server: Express) => {
     articlesController.deleteArticle
   );
 
+  // DELETE completedArticles by user
+  server.delete(
+    '/api/users/:idUser/completedArticles',
+    authController.getCurrentSession,
+    usersController.deleteCompletedArticles
+  );
+
   ///// PACKAGES /////
   // GET packages
   server.get(

@@ -279,6 +279,23 @@ const deleteBookmarkByUser = async (
   }
 };
 
+// DELETE completedArticles by user
+const deleteCompletedArticles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const completedArticlesDeleted = await Article.deleteCompletedArticles(
+      Number(idUser)
+    );
+    completedArticlesDeleted ? res.sendStatus(204) : res.sendStatus(500);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export default {
   userExists,
   validateUser,
@@ -296,4 +313,5 @@ export default {
   updateUser,
   deleteUser,
   deleteBookmarkByUser,
+  deleteCompletedArticles,
 };

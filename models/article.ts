@@ -45,10 +45,16 @@ const getArticlesByPackage = async (idPackage: number): Promise<IArticle[]> => {
 };
 
 // GET completedArticle by user and article
-const getCompletedArticlesByUserAndArticle = async (idUser : number, idArticle : number) : Promise<ICompletedArticle> => {
+const getCompletedArticlesByUserAndArticle = async (
+  idUser: number,
+  idArticle: number
+): Promise<ICompletedArticle> => {
   const [results] = await connection
-  .promise()
-  .query<ICompletedArticle[]>('SELECT * FROM completedArticles WHERE idUser = ? AND idArticle = ?', [idUser, idArticle]);
+    .promise()
+    .query<ICompletedArticle[]>(
+      'SELECT * FROM completedArticles WHERE idUser = ? AND idArticle = ?',
+      [idUser, idArticle]
+    );
   return results[0];
 };
 
@@ -160,6 +166,16 @@ const deleteArticle = async (idArticle: number): Promise<boolean> => {
   return results[0].affectedRows === 1;
 };
 
+// DELETE completedArticles by user
+const deleteCompletedArticles = async (idUser: number): Promise<boolean> => {
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>('DELETE FROM completedarticles WHERE idUser = ?', [
+      idUser,
+    ]);
+  return results[0].affectedRows > 0;
+};
+
 export default {
   getAllArticles,
   getArticleById,
@@ -172,4 +188,5 @@ export default {
   addCompletedArticleByUser,
   updateArticle,
   deleteArticle,
+  deleteCompletedArticles,
 };
