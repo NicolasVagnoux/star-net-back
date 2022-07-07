@@ -5,7 +5,8 @@ import Category from '../models/category';
 import IArticle from '../interfaces/IArticle';
 import { ErrorHandler } from '../helpers/errors';
 import IArticlePackage from '../interfaces/IArticlePackage';
-import { Console } from 'console';
+import IPackage from '../interfaces/IPackage';
+import IUser from '../interfaces/IUser';
 
 // [MIDDLEWARE] Check if package exists
 const packageExists = (async (
@@ -33,10 +34,11 @@ const packageIsNotFollowedByUser = (async (
   next: NextFunction
 ) => {
   try {
-    const { idUser } = req.params;
-    const {idPackage} = req.body;
+    const { idUser } = req.params as IUser;
+    const { idPackage }  = req.body as IPackage;
     const packageIsFollowed = await Package.getPackagesByUser(Number(idUser));
-    if (packageIsFollowed.filter((packagefollowed) => packagefollowed.id === idPackage).length > 0) {
+    const condition = packageIsFollowed.filter((packagefollowed) => packagefollowed.id === idPackage).length;
+    if ( condition > 0) {
       next(new ErrorHandler(404, 'This package is already followed'));
     } else {
       next();
