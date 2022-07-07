@@ -102,6 +102,13 @@ const setupRoutes = (server: Express) => {
     usersController.getCompletedArticlesByUserAndArticle
   );
 
+  // POST completed article by user
+  server.post(
+    '/api/users/:idUser/completedArticles',
+    authController.getCurrentSession,
+    usersController.addCompletedArticleByUser
+  );
+
   //POST article
   server.post(
     '/api/articles',
@@ -136,12 +143,21 @@ const setupRoutes = (server: Express) => {
     authController.getCurrentSession,
     packagesController.getAllPackages
   );
-  // GET packages by User (followedPackages)
+  // GET followedpackages by User (followedPackages)
   server.get(
-    '/api/users/:idUser/packages',
+    '/api/users/:idUser/followedpackages',
     usersController.userExists,
     usersController.getPackagesByUser
   );
+
+   // POST followedpackages by user
+   server.post(
+    '/api/users/:idUser/followedpackages',
+    // packagesController.packageExists,
+    packagesController.packageIsNotFollowedByUser,
+    usersController.addFollowedPackagesByUser
+  );
+
   // POST article by package
   server.post(
     '/api/packages/:idPackage/articles',
@@ -150,15 +166,10 @@ const setupRoutes = (server: Express) => {
     packagesController.addArticleByPackage
   );
 
-  // POST completed article by user
-  server.post(
-    '/api/users/:idUser/completedArticles',
-    authController.getCurrentSession,
-    usersController.addCompletedArticleByUser
-  );
+  // 
 
   ///// CATEGORIES /////
-  // GET all categories 
+  // GET all categories
   server.get('/api/categories', categoriesController.getAllCategories);
   // GET categories by package
   server.get(
