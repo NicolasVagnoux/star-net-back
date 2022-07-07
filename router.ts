@@ -1,4 +1,5 @@
 import { Express } from 'express';
+import badgesController from './controllers/badges';
 import articlesController from './controllers/articles';
 import usersController from './controllers/users';
 import packagesController from './controllers/packages';
@@ -169,6 +170,15 @@ const setupRoutes = (server: Express) => {
   server.get(
     '/api/articles/:idArticle/categories',
     articlesController.getCategoriesByArticle
+  );
+
+  ///// BADGES /////
+  // GET unlocked badges by user
+
+  server.get(
+    '/api/users/:idUser/unlockedBadges',
+    authController.getCurrentSession,
+    badgesController.getBadgesByUser
   );
 };
 export default setupRoutes;
