@@ -2,12 +2,12 @@ import { RowDataPacket } from 'mysql2';
 
 export default interface IUser extends RowDataPacket {
     id: number;
-    firstname: string;
-    lastname: string;
+    firstName: string;
+    lastName: string;
     phoneNumber: string;
     email: string;
     registrationDate: Date; //à vérifier
-    userPicture: File; //à vérifier
+    userPicture: string;
     password: string;
     hashedPassword: string;
     idTheme: number;

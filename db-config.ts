@@ -1,12 +1,10 @@
+// importe le package dotenv pour accèder au .env
 import 'dotenv/config';
-import mysql, { Connection } from 'mysql2';
+// importe mysql pour se connecter à la base
+import mysql, { Pool } from 'mysql2';
 
-const connection: Connection = mysql.createConnection({
-  host: process.env.DB_HOST, // address of the server
-  port: Number(process.env.DB_PORT), // port of the DB server (mysql), not to be confused with the nodeJS server PORT !
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-});
+// créer l'objet pool
+const pool: Pool = mysql.createPool(process.env.CLEARDB_DATABASE_URL || '');
 
-export default connection;
+// exporte l'objet pool pour l'utiliser ailleurs
+export default pool;

@@ -3,8 +3,13 @@ import { ErrorHandler } from '../helpers/errors';
 import Article from '../models/article';
 import User from '../models/user';
 import Package from '../models/package';
+import Bookmark from '../models/bookmark';
+import Comment from '../models/comment';
 import Joi from 'joi';
 import IUser from '../interfaces/IUser';
+import IBookmark from '../interfaces/IBookmark';
+import IComment from '../interfaces/IComment';
+import ICompletedArticle from '../interfaces/ICompletedArticle';
 
 // [MIDDLEWARE] Check if user exists
 const userExists = (async (req: Request, res: Response, next: NextFunction) => {
@@ -23,31 +28,35 @@ const userExists = (async (req: Request, res: Response, next: NextFunction) => {
 
 // [MIDDLEWARE] User Validation with JOI
 const validateUser = (req: Request, res: Response, next: NextFunction) => {
-  let required : Joi.PresenceMode = 'optional'; // On créé une variable required qui définit si les données sont requises ou non. Si la méthode est POST, le required devient obligatoire (mais pas si la méthode est PUT).
+  let required: Joi.PresenceMode = 'optional'; // On créé une variable required qui définit si les données sont requises ou non. Si la méthode est POST, le required devient obligatoire (mais pas si la méthode est PUT).
   if (req.method === 'POST') {
-      required = 'required';
+    required = 'required';
   }
   const errors = Joi.object({
-      firstName: Joi.string().max(80).presence(required),
-      lastName: Joi.string().max(80).presence(required),
-      phoneNumber: Joi.string().max(40).optional(),
-      email: Joi.string().email().max(150).presence(required),
-      userPicture: Joi.string().max(500).optional(),
-      password: Joi.string().min(6).max(50).presence(required),
-      idTheme: Joi.number().min(1).max(10).optional(),
-      idLanguage: Joi.number().min(1).max(10).optional(),
-      idRight: Joi.number().min(1).max(10).optional(),
-      id: Joi.number().optional(),
+    firstName: Joi.string().max(80).presence(required),
+    lastName: Joi.string().max(80).presence(required),
+    phoneNumber: Joi.string().max(40).optional(),
+    email: Joi.string().email().max(150).presence(required),
+    userPicture: Joi.string().max(500).optional(),
+    password: Joi.string().min(6).max(50).presence(required),
+    idTheme: Joi.number().min(1).max(10).optional(),
+    idLanguage: Joi.number().min(1).max(10).optional(),
+    idRight: Joi.number().min(1).max(10).optional(),
+    id: Joi.number().optional(),
   }).validate(req.body, { abortEarly: false }).error;
   if (errors) {
-      next(new ErrorHandler(422, errors.message));
+    next(new ErrorHandler(422, errors.message));
   } else {
-      next();
+    next();
   }
 };
 
 // [MIDDLEWARE] Check if email is free
-const emailIsFree = (async (req: Request, res: Response, next: NextFunction) => {
+const emailIsFree = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email } = req.body as IUser;
     const emailExists = await User.getUserByEmail(email);
@@ -62,11 +71,15 @@ const emailIsFree = (async (req: Request, res: Response, next: NextFunction) => 
 }) as RequestHandler;
 
 //GET all users
-const getAllUsers = (async (req: Request, res: Response, next: NextFunction) => {
+const getAllUsers = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const users = await User.getAllUsers();
     return res.status(200).json(users);
-  } catch(err) {
+  } catch (err) {
     next(err);
   }
 }) as RequestHandler;
@@ -97,6 +110,42 @@ const getArticlesByUser = async (
   }
 };
 
+//GET bookmark by user and article
+const getBookmarkByUserAndArticle = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser, idArticle } = req.params;
+    const bookmark = await Bookmark.getBookmarkByUserAndArticle(
+      Number(idUser),
+      Number(idArticle)
+    );
+    return res.status(200).json(bookmark);
+  } catch (err) {
+    next(err);
+  }
+};
+
+//GET completed by user and article
+const getCompletedArticlesByUserAndArticle = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser, idArticle } = req.params;
+    const completedArticle = await Article.getCompletedArticlesByUserAndArticle(
+      Number(idUser),
+      Number(idArticle)
+    );
+    return res.status(200).json(completedArticle);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // GET packages by user (followedPackages)
 const getPackagesByUser = async (
   req: Request,
@@ -115,11 +164,84 @@ const getPackagesByUser = async (
 //POST user
 const addUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-      const user = req.body as IUser; // On prend le body qu'on met dans une constante user.
-      user.id = await User.addUser(user); // Puis on rajoute à cette constante l'id qui vient de l'insertId de la requête.
-      res.status(201).json(user);
-  } catch(err) {
-      next(err);
+    const user = req.body as IUser; // On prend le body qu'on met dans une constante user.
+    user.id = await User.addUser(user); // Puis on rajoute à cette constante l'id qui vient de l'insertId de la requête.
+    res.status(201).json(user);
+  } catch (err) {
+    next(err);
+  }
+};
+
+//POST bookmark by user
+const addBookmarkByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const bookmark = req.body as IBookmark;
+    bookmark.idUser = Number(idUser);
+    bookmark.id = await Bookmark.addBookmark(Number(idUser), bookmark);
+    res.status(201).json(bookmark);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// POST completed articles by user and package
+const addCompletedArticleByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const completedArticle = req.body as ICompletedArticle;
+    completedArticle.idUser = Number(idUser);
+    completedArticle.id = await Article.addCompletedArticleByUser(
+      Number(idUser),
+      completedArticle
+    );
+    res.status(201).json(completedArticle);
+  } catch (err) {
+    next(err);
+  }
+};
+
+//POST comment by user
+const addCommentByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const comment = req.body as IComment;
+    comment.idUser = Number(idUser);
+    comment.id = await Comment.addComment(Number(idUser), comment);
+    res.status(201).json(comment);
+  } catch (err) {
+    next(err);
+  }
+};
+
+//PUT user
+const updateUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { idUser } = req.params;
+    const userUpdated = await User.updateUser(
+      Number(idUser),
+      req.body as IUser
+    ); //userUpdated is a boolean, returned by the model
+    if (userUpdated) {
+      const user = await User.getUserById(Number(idUser));
+      res.status(200).send(user); // react-admin needs this response
+    } else {
+      throw new ErrorHandler(500, 'User cannot be updated');
+    }
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -129,14 +251,67 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     const { idUser } = req.params;
     const user = await User.getUserById(Number(idUser));
     const userDeleted = await User.deleteUser(Number(idUser)); //userDeleted = boolean
-    if(userDeleted) {
+    if (userDeleted) {
       res.status(200).send(user); //needed by react-admin
     } else {
       throw new ErrorHandler(500, 'User cannot be deleted');
     }
-  } catch(err) {
+  } catch (err) {
     next(err);
   }
 };
 
-export default { userExists, validateUser, emailIsFree, getAllUsers, getUserById, getArticlesByUser, getPackagesByUser, addUser, deleteUser };
+//DELETE bookmark by user
+const deleteBookmarkByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser, idArticle } = req.params;
+    const bookmarkDeleted = await Bookmark.deleteBookmark(
+      Number(idUser),
+      Number(idArticle)
+    ); //boolean
+    bookmarkDeleted ? res.sendStatus(204) : res.sendStatus(500);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// DELETE completedArticles by user
+const deleteCompletedArticles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const completedArticlesDeleted = await Article.deleteCompletedArticles(
+      Number(idUser)
+    );
+    completedArticlesDeleted ? res.sendStatus(204) : res.sendStatus(500);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default {
+  userExists,
+  validateUser,
+  emailIsFree,
+  getAllUsers,
+  getUserById,
+  getArticlesByUser,
+  getBookmarkByUserAndArticle,
+  getCompletedArticlesByUserAndArticle,
+  getPackagesByUser,
+  addUser,
+  addCommentByUser,
+  addBookmarkByUser,
+  addCompletedArticleByUser,
+  updateUser,
+  deleteUser,
+  deleteBookmarkByUser,
+  deleteCompletedArticles,
+};

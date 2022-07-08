@@ -11,8 +11,10 @@
     "fix": "eslint \"./**/*.ts\" --fix",
     "prettify": "prettier --write .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install",
-    "cm": "cz"
+    "prepare": "husky install && chmod ug+x .husky/*",
+    "cm": "cz",
+    "start": "node index.js",
+    "postinstall": "tsc"
   },
   "eslintConfig": {
     "extends": "airbnb-base",
