@@ -140,7 +140,7 @@ const setupRoutes = (server: Express) => {
   // GET packages
   server.get(
     '/api/packages',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     packagesController.getAllPackages
   );
   // GET packages by User (followedPackages)
