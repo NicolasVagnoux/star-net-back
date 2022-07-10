@@ -150,7 +150,7 @@ const setupRoutes = (server: Express) => {
     usersController.getPackagesByUser
   );
 
-   // POST followedpackages by user
+   // POST followedpackages by User (followedPackages)
    server.post(
     '/api/users/:idUser/followedpackages',
     // packagesController.packageExists,
