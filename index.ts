@@ -1,4 +1,4 @@
-import express, { Request, NextFunction, Response } from 'express';
+import express, { Request, NextFunction,Response } from 'express';
 import cookieParser from 'cookie-parser';
 import { handleError } from './helpers/errors';
 import setupRoutes from './router';
@@ -9,10 +9,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const corsOptions: cors.CorsOptions = {
-  origin: ["*"
-  //   'http://localhost:3001',
-  //   'http://localhost:3000',
-  //   'https://star-net-front.vercel.app',
+  origin: [
+    'http://localhost:3001',
+    'http://localhost:3000',
+    'https://star-net-front.vercel.app',
   ],
   credentials: true,
 };
