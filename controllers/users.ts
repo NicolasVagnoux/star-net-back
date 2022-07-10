@@ -10,6 +10,7 @@ import IUser from '../interfaces/IUser';
 import IBookmark from '../interfaces/IBookmark';
 import IComment from '../interfaces/IComment';
 import ICompletedArticle from '../interfaces/ICompletedArticle';
+import IFollowedPackage from '../interfaces/IFollowedPackage';
 
 // [MIDDLEWARE] Check if user exists
 const userExists = (async (req: Request, res: Response, next: NextFunction) => {
@@ -209,6 +210,26 @@ const addCompletedArticleByUser = async (
   }
 };
 
+// POST followed packages by user
+const addFollowedPackagesByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const followedPackage = req.body as IFollowedPackage;
+    followedPackage.idUser = Number(idUser);
+    followedPackage.id = await Package.addFollowedPackagesByUser(
+      Number(idUser),
+      followedPackage
+    );
+    res.status(201).json(followedPackage);
+  } catch (err) {
+    next(err);
+  }
+};
+
 //POST comment by user
 const addCommentByUser = async (
   req: Request,
@@ -310,6 +331,7 @@ export default {
   addCommentByUser,
   addBookmarkByUser,
   addCompletedArticleByUser,
+  addFollowedPackagesByUser,
   updateUser,
   deleteUser,
   deleteBookmarkByUser,

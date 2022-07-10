@@ -5,6 +5,8 @@ import Category from '../models/category';
 import IArticle from '../interfaces/IArticle';
 import { ErrorHandler } from '../helpers/errors';
 import IArticlePackage from '../interfaces/IArticlePackage';
+import IPackage from '../interfaces/IPackage';
+import IUser from '../interfaces/IUser';
 
 // [MIDDLEWARE] Check if package exists
 const packageExists = (async (
@@ -17,6 +19,27 @@ const packageExists = (async (
     const packageExists = await Package.getPackageById(Number(idPackage));
     if (!packageExists) {
       next(new ErrorHandler(404, 'This package does not exist'));
+    } else {
+      next();
+    }
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
+// [MIDDLEWARE] Check if packages is already followed by user
+const packageIsNotFollowedByUser = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params as IUser;
+    const { idPackage }  = req.body as IPackage;
+    const packageIsFollowed = await Package.getPackagesByUser(Number(idUser));
+    const condition = packageIsFollowed.filter((packagefollowed) => packagefollowed.id === idPackage).length;
+    if ( condition > 0) {
+      next(new ErrorHandler(404, 'This package is already followed'));
     } else {
       next();
     }
@@ -133,6 +156,7 @@ const addArticleByPackage = async (
 export default {
   packageExists,
   articlePackageExists,
+  packageIsNotFollowedByUser,
   getAllPackages,
   getArticlesByPackage,
   getCategoriesByPackage,
