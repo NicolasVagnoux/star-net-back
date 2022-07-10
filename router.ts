@@ -129,6 +129,13 @@ const setupRoutes = (server: Express) => {
     articlesController.deleteArticle
   );
 
+  // POST completed article by user
+  server.post(
+    '/api/users/:idUser/completedArticles',
+    authController.getCurrentSession,
+    usersController.addCompletedArticleByUser
+  );
+
   // DELETE completedArticles by user
   server.delete(
     '/api/users/:idUser/completedArticles',
@@ -140,7 +147,7 @@ const setupRoutes = (server: Express) => {
   // GET packages
   server.get(
     '/api/packages',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     packagesController.getAllPackages
   );
   // GET followedpackages by User (followedPackages)
@@ -165,8 +172,6 @@ const setupRoutes = (server: Express) => {
     packagesController.articlePackageExists,
     packagesController.addArticleByPackage
   );
-
-  // 
 
   ///// CATEGORIES /////
   // GET all categories

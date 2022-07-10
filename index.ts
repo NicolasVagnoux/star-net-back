@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, NextFunction,Response } from 'express';
 import cookieParser from 'cookie-parser';
 import { handleError } from './helpers/errors';
 import setupRoutes from './router';
@@ -12,6 +12,7 @@ const corsOptions: cors.CorsOptions = {
   origin: [
     'http://localhost:3001',
     'http://localhost:3000',
+    'https://star-net-front.vercel.app',
   ],
   credentials: true,
 };
@@ -25,7 +26,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader('Access-Control-Expose-Headers', 'Content-Range');
   next();
 });
-
 //middleware pour lire le body
 app.use(express.json());
 //middleware pour envoyer des cookies
