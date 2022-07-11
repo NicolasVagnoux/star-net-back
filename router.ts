@@ -4,6 +4,7 @@ import usersController from './controllers/users';
 import packagesController from './controllers/packages';
 import authController from './controllers/auth';
 import categoriesController from './controllers/categories';
+import contactController from './helpers/contact';
 
 const setupRoutes = (server: Express) => {
   ///// USERS /////
@@ -102,6 +103,13 @@ const setupRoutes = (server: Express) => {
     usersController.getCompletedArticlesByUserAndArticle
   );
 
+  // POST completed article by user
+  server.post(
+    '/api/users/:idUser/completedArticles',
+    authController.getCurrentSession,
+    usersController.addCompletedArticleByUser
+  );
+
   //POST article
   server.post(
     '/api/articles',
@@ -143,12 +151,21 @@ const setupRoutes = (server: Express) => {
     // authController.getCurrentSession,
     packagesController.getAllPackages
   );
-  // GET packages by User (followedPackages)
+  // GET followedpackages by User (followedPackages)
   server.get(
-    '/api/users/:idUser/packages',
+    '/api/users/:idUser/followedpackages',
     usersController.userExists,
     usersController.getPackagesByUser
   );
+
+   // POST followedpackages by User (followedPackages)
+   server.post(
+    '/api/users/:idUser/followedpackages',
+    // packagesController.packageExists,
+    packagesController.packageIsNotFollowedByUser,
+    usersController.addFollowedPackagesByUser
+  );
+
   // POST article by package
   server.post(
     '/api/packages/:idPackage/articles',
@@ -170,5 +187,8 @@ const setupRoutes = (server: Express) => {
     '/api/articles/:idArticle/categories',
     articlesController.getCategoriesByArticle
   );
+
+  ///// CONTACT FORM /////
+  server.post('/api/contact', contactController.sendMail);
 };
 export default setupRoutes;

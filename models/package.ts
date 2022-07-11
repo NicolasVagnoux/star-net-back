@@ -1,7 +1,8 @@
 import IPackage from '../interfaces/IPackage';
 import connection from '../db-config';
 import IArticlePackage from '../interfaces/IArticlePackage';
-
+import IFollowedPackage from '../interfaces/IFollowedPackage';
+import { ResultSetHeader } from 'mysql2';
 
 // GET packages
 const getAllPackages = async () : Promise<IPackage[]> => {
@@ -38,4 +39,19 @@ const getArticlePackageByIds = async (idPackage: number, idArticle: number) : Pr
   return results[0];
 };
 
-export default { getAllPackages, getPackageById, getPackagesByUser, getArticlePackageByIds };
+// POST followed package by user and package
+
+const addFollowedPackagesByUser = async (
+  idUser: number,
+  followedPackage: IFollowedPackage
+): Promise<number> => {
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>(
+      'INSERT INTO followedpackages (idUser, idPackage) VALUES (?, ?)',
+      [idUser, followedPackage.idPackage]
+    );
+  return results[0].insertId;
+};
+
+export default { getAllPackages, getPackageById, getPackagesByUser, getArticlePackageByIds, addFollowedPackagesByUser };
