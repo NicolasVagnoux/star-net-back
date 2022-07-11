@@ -325,8 +325,9 @@ const deleteFollowedPackages = async (
 ) => {
   try {
     const { idUser } = req.params;
+    const { idPackage } = req.body;
     const followedPackagesDeleted = await Package.deleteFollowedPackages(
-      Number(idUser)
+      Number(idUser), Number(idPackage)
     );
     followedPackagesDeleted ? res.sendStatus(204) : res.sendStatus(500);
   } catch (err) {

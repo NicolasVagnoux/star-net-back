@@ -55,11 +55,11 @@ const addFollowedPackagesByUser = async (
 };
 
 // DELETE followed package by user
-const deleteFollowedPackages = async (idUser: number): Promise<boolean> => {
+const deleteFollowedPackages = async (idUser: number, idPackage : number): Promise<boolean> => {
   const results = await connection
     .promise()
-    .query<ResultSetHeader>('DELETE FROM followedpackages WHERE idUser = ?', [
-      idUser,
+    .query<ResultSetHeader>('DELETE FROM followedpackages WHERE idUser = ? AND idPackage = ?', [
+      idUser, idPackage
     ]);
   return results[0].affectedRows > 0;
 };

@@ -48,6 +48,27 @@ const packageIsNotFollowedByUser = (async (
   }
 }) as RequestHandler;
 
+// [MIDDLEWARE] Check if packages is already followed by user
+const isPackageFollowedByUser = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params as IUser;
+    const { idPackage }  = req.body as IPackage;
+    const packageIsFollowed = await Package.getPackagesByUser(Number(idUser));
+    const condition = packageIsFollowed.filter((packagefollowed) => packagefollowed.id === idPackage).length;
+    if ( condition !== 1) {
+      next(new ErrorHandler(404, 'This package is not followed by user'));
+    } else {
+      next();
+    }
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
 // [MIDDLEWARE] Check if articlePackage exists
 const articlePackageExists = (async (
   req: Request,
@@ -157,6 +178,7 @@ export default {
   packageExists,
   articlePackageExists,
   packageIsNotFollowedByUser,
+  isPackageFollowedByUser,
   getAllPackages,
   getArticlesByPackage,
   getCategoriesByPackage,
