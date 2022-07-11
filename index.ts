@@ -36,6 +36,9 @@ setupRoutes(app);
 // A mettre à la fin pour gèrer les erreurs qui sortiront des routes
 app.use(handleError);
 
+// Pour que nodemailer accepte de se connecter
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0 as unknown as string;
+
 app.listen(port, () => {
   console.log(`server is listening on ${port}`);
 });
