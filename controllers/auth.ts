@@ -62,7 +62,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
       );
       if (passwordIsCorrect) {
         const token = calculateToken(email, user.id, user.idRight);
-        res.cookie('user_token', token);
+        res.cookie('user_token', token, { sameSite: 'none', secure: true }); // mandatory because front and back have different domains
         res.status(200).send('Successfully logged in !');
       } else {
         throw new ErrorHandler(401, 'Wrong Password');
@@ -71,31 +71,31 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
   } catch (err) {
     next(err);
   }
+};
+// COOKIE AND USER SESSION
+// Cookie typing
+interface ICookie {
+  user_token: string;
 }
-  // COOKIE AND USER SESSION
-  // Cookie typing
-  interface ICookie {
-    user_token: string;
-  }
-  // Middleware to get current session
-  const getCurrentSession = (req: Request, res: Response, next: NextFunction) => {
-    const myCookie = req.cookies as ICookie;
-    if (!myCookie.user_token && !req.headers.authorization) {
+// Middleware to get current session
+const getCurrentSession = (req: Request, res: Response, next: NextFunction) => {
+  const myCookie = req.cookies as ICookie;
+  if (!myCookie.user_token && !req.headers.authorization) {
+    next(new ErrorHandler(401, 'Unauthorized user, please login'));
+  } else {
+    const token: string =
+      myCookie.user_token || req.headers.authorization || '';
+    req.userInfo = jwt.verify(
+      token,
+      process.env.PRIVATE_KEY as string
+    ) as IUser;
+    if (req.userInfo === undefined) {
       next(new ErrorHandler(401, 'Unauthorized user, please login'));
     } else {
-      const token: string =
-        myCookie.user_token || req.headers.authorization || '';
-      req.userInfo = jwt.verify(
-        token,
-        process.env.PRIVATE_KEY as string
-      ) as IUser;
-      if (req.userInfo === undefined) {
-        next(new ErrorHandler(401, 'Unauthorized user, please login'));
-      } else {
-        next();
-      }
+      next();
     }
-  };
+  }
+};
 
 export default {
   hashPassword,
