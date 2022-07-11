@@ -4,6 +4,7 @@ import usersController from './controllers/users';
 import packagesController from './controllers/packages';
 import authController from './controllers/auth';
 import categoriesController from './controllers/categories';
+import contactController from './helpers/contact';
 
 const setupRoutes = (server: Express) => {
   ///// USERS /////
@@ -170,5 +171,8 @@ const setupRoutes = (server: Express) => {
     '/api/articles/:idArticle/categories',
     articlesController.getCategoriesByArticle
   );
+
+  ///// CONTACT FORM /////
+  server.post('/api/contact', contactController.sendMail);
 };
 export default setupRoutes;
