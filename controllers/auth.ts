@@ -47,14 +47,14 @@ const validateLogin = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-//Login
+// Login
 const login = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body as IUser;
     const user = await User.getUserByEmail(email);
     if (!user) {
       throw new ErrorHandler(404, 'This user does not exist');
-      // res.status(404).send('This use does not exist');
+      // res.status(404).send('This user does not exist');
     } else {
       const passwordIsCorrect: boolean = await verifyPassword(
         password,
@@ -72,6 +72,34 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     next(err);
   }
 };
+
+// validPassword
+const validPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, password } = req.body as IUser;
+    const user = await User.getUserByEmail(email);
+    if (!user) {
+      throw new ErrorHandler(404, 'User not logged');
+    } else {
+      const passwordIsCorrect: boolean = await verifyPassword(
+        password,
+        user.hashedPassword
+      );
+      if (passwordIsCorrect) {
+        res.status(200).send('Password is correct');
+      } else {
+        throw new ErrorHandler(401, 'Wrong password');
+      }
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
 // COOKIE AND USER SESSION
 // Cookie typing
 interface ICookie {
@@ -102,5 +130,6 @@ export default {
   verifyPassword,
   validateLogin,
   login,
+  validPassword,
   getCurrentSession,
 };

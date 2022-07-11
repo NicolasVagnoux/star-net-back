@@ -230,6 +230,23 @@ const addFollowedPackagesByUser = async (
   }
 };
 
+// DELETE followed packages by user
+const deleteFollowedPackagesByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const followedPackageDeleted = await Package.deleteFollowedPackage(
+      Number(idUser)
+    ); //boolean
+    followedPackageDeleted ? res.sendStatus(204) : res.sendStatus(500);
+  } catch (err) {
+    next(err);
+  }
+};
+
 //POST comment by user
 const addCommentByUser = async (
   req: Request,
@@ -332,6 +349,7 @@ export default {
   addBookmarkByUser,
   addCompletedArticleByUser,
   addFollowedPackagesByUser,
+  deleteFollowedPackagesByUser,
   updateUser,
   deleteUser,
   deleteBookmarkByUser,

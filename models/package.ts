@@ -5,7 +5,7 @@ import IFollowedPackage from '../interfaces/IFollowedPackage';
 import { ResultSetHeader } from 'mysql2';
 
 // GET packages
-const getAllPackages = async () : Promise<IPackage[]> => {
+const getAllPackages = async (): Promise<IPackage[]> => {
   const sql = `SELECT * FROM packages`;
   const results = await connection.promise().query<IPackage[]>(sql);
   return results[0];
@@ -31,16 +31,20 @@ const getPackagesByUser = async (idUser: number): Promise<IPackage[]> => {
 };
 
 // GET articlesPackages by ids
-const getArticlePackageByIds = async (idPackage: number, idArticle: number) : Promise<IArticlePackage> => {
+const getArticlePackageByIds = async (
+  idPackage: number,
+  idArticle: number
+): Promise<IArticlePackage> => {
   const [results] = await connection
-  .promise()
-  .query<IArticlePackage[]>('SELECT * FROM articlesPackages WHERE idPackage = ? AND idArticle = ?',
-  [idPackage, idArticle]);
+    .promise()
+    .query<IArticlePackage[]>(
+      'SELECT * FROM articlesPackages WHERE idPackage = ? AND idArticle = ?',
+      [idPackage, idArticle]
+    );
   return results[0];
 };
 
 // POST followed package by user and package
-
 const addFollowedPackagesByUser = async (
   idUser: number,
   followedPackage: IFollowedPackage
@@ -54,4 +58,21 @@ const addFollowedPackagesByUser = async (
   return results[0].insertId;
 };
 
-export default { getAllPackages, getPackageById, getPackagesByUser, getArticlePackageByIds, addFollowedPackagesByUser };
+// DELETE followed package by user
+const deleteFollowedPackage = async (idUser: number): Promise<boolean> => {
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>('DELETE FROM followedpackages WHERE idUser = ?', [
+      idUser,
+    ]);
+  return results[0].affectedRows >= 0;
+};
+
+export default {
+  getAllPackages,
+  getPackageById,
+  getPackagesByUser,
+  getArticlePackageByIds,
+  addFollowedPackagesByUser,
+  deleteFollowedPackage,
+};

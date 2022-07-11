@@ -66,6 +66,9 @@ const setupRoutes = (server: Express) => {
   ///// LOGIN /////
   server.post('/api/login', authController.validateLogin, authController.login);
 
+  ///// PASSWORD /////
+  server.post('/api/password', authController.validPassword);
+
   ///// ARTICLES /////
   // GET articles
   server.get('/api/articles', articlesController.getAllArticles);
@@ -158,12 +161,19 @@ const setupRoutes = (server: Express) => {
     usersController.getPackagesByUser
   );
 
-   // POST followedpackages by User (followedPackages)
-   server.post(
+  // POST followedpackages by User (followedPackages)
+  server.post(
     '/api/users/:idUser/followedpackages',
     // packagesController.packageExists,
     packagesController.packageIsNotFollowedByUser,
     usersController.addFollowedPackagesByUser
+  );
+
+  // DELETE followedpackages by User (followedPackages)
+  server.delete(
+    '/api/users/:idUser',
+    authController.getCurrentSession,
+    usersController.deleteFollowedPackagesByUser
   );
 
   // POST article by package
