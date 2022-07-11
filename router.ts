@@ -5,6 +5,7 @@ import packagesController from './controllers/packages';
 import authController from './controllers/auth';
 import categoriesController from './controllers/categories';
 import contactController from './helpers/contact';
+import faqController from './controllers/faqs';
 
 const setupRoutes = (server: Express) => {
   ///// USERS /////
@@ -200,5 +201,17 @@ const setupRoutes = (server: Express) => {
 
   ///// CONTACT FORM /////
   server.post('/api/contact', contactController.sendMail);
+
+  ///// FAQ /////
+  // GET all faqs
+  server.get('/api/faq', faqController.getAllFaqs);
+  // GET faq by id
+  server.get('/api/faq/:idFaq', faqController.getOneFaq);
+  // POST faq
+  server.post('/api/faq', faqController.addFaq);
+  // PUT faq
+  server.put('/api/faq/:idFaq', faqController.updateFaq);
+  // DELETE faq
+  server.delete('/api/faq/:idFaq', faqController.deleteFaq);
 };
 export default setupRoutes;
