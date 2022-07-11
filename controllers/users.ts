@@ -328,6 +328,8 @@ const deleteAllBookmarksByUser = async (
     const allBookmarksDeleted = await Bookmark.deleteAllBookmarks(
       Number(idUser)
     );
+    // boolean
+    allBookmarksDeleted ? res.sendStatus(204) : res.sendStatus(500);
   } catch (err) {
     next(err);
   }
