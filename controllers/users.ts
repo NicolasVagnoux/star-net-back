@@ -317,6 +317,22 @@ const deleteBookmarkByUser = async (
   }
 };
 
+// DELETE all bookmarks by user
+const deleteAllBookmarksByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const allBookmarksDeleted = await Bookmark.deleteAllBookmarks(
+      Number(idUser)
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
 // DELETE completedArticles by user
 const deleteCompletedArticles = async (
   req: Request,
@@ -342,6 +358,7 @@ export default {
   getUserById,
   getArticlesByUser,
   getBookmarkByUserAndArticle,
+  deleteAllBookmarksByUser,
   getCompletedArticlesByUserAndArticle,
   getPackagesByUser,
   addUser,

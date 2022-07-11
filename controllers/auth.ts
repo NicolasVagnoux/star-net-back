@@ -74,31 +74,31 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 // validPassword
-const validPassword = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { email, password } = req.body as IUser;
-    const user = await User.getUserByEmail(email);
-    if (!user) {
-      throw new ErrorHandler(404, 'User not logged');
-    } else {
-      const passwordIsCorrect: boolean = await verifyPassword(
-        password,
-        user.hashedPassword
-      );
-      if (passwordIsCorrect) {
-        res.status(200).send('Password is correct');
-      } else {
-        throw new ErrorHandler(401, 'Wrong password');
-      }
-    }
-  } catch (err) {
-    next(err);
-  }
-};
+// const validPassword = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const { email, password } = req.body as IUser;
+//     const user = await User.getUserByEmail(email);
+//     if (!user) {
+//       throw new ErrorHandler(404, 'User not logged');
+//     } else {
+//       const passwordIsCorrect: boolean = await verifyPassword(
+//         password,
+//         user.hashedPassword
+//       );
+//       if (passwordIsCorrect) {
+//         res.status(200).send('Password is correct');
+//       } else {
+//         throw new ErrorHandler(401, 'Wrong password');
+//       }
+//     }
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
 // COOKIE AND USER SESSION
 // Cookie typing
@@ -130,6 +130,6 @@ export default {
   verifyPassword,
   validateLogin,
   login,
-  validPassword,
+  // validPassword,
   getCurrentSession,
 };
