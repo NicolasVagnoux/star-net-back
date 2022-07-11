@@ -317,6 +317,23 @@ const deleteCompletedArticles = async (
   }
 };
 
+// DELETE followedpackages by user
+const deleteFollowedPackages = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const followedPackagesDeleted = await Package.deleteFollowedPackages(
+      Number(idUser)
+    );
+    followedPackagesDeleted ? res.sendStatus(204) : res.sendStatus(500);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export default {
   userExists,
   validateUser,
@@ -336,4 +353,5 @@ export default {
   deleteUser,
   deleteBookmarkByUser,
   deleteCompletedArticles,
+  deleteFollowedPackages,
 };

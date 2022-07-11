@@ -167,6 +167,13 @@ const setupRoutes = (server: Express) => {
     usersController.addFollowedPackagesByUser
   );
 
+  // DELETE followedpackages by user
+  server.delete(
+    '/api/users/:idUser/followedpackages',
+    authController.getCurrentSession,
+    usersController.deleteCompletedArticles
+  );
+
   // POST article by package
   server.post(
     '/api/packages/:idPackage/articles',
