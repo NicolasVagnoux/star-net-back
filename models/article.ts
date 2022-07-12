@@ -5,15 +5,19 @@ import { ResultSetHeader } from 'mysql2';
 
 /////// ARTICLES //
 // get articles //
-const getAllArticles = async (titleFilter  = '', tagFilter  = ''): Promise<IArticle[]> => {
+const getAllArticles = async (
+  titleFilter = '',
+  tagFilter = ''
+): Promise<IArticle[]> => {
   let sql = `SELECT articles.id, title, idUser, mainImage, mainContent, DATE_FORMAT(creationDate, '%d/%m/%Y') AS creationDate, DATE_FORMAT(lastUpdateDate, '%d/%m/%Y') AS lastUpdateDate FROM articles`;
-  const sqlValues : string[] = [];
-  if(tagFilter) {
-    sql += ' INNER JOIN articlesCategories ON articles.id = articlesCategories.idArticle WHERE articlesCategories.idCategory = ?'
+  const sqlValues: string[] = [];
+  if (tagFilter) {
+    sql +=
+      ' INNER JOIN articlesCategories ON articles.id = articlesCategories.idArticle WHERE articlesCategories.idCategory = ?';
     sqlValues.push(tagFilter);
   }
-  if(titleFilter) {
-    if(tagFilter) {
+  if (titleFilter) {
+    if (tagFilter) {
       sql += ` AND articles.title LIKE ?`;
     } else {
       sql += ` WHERE title LIKE ?`;
@@ -111,7 +115,6 @@ const addArticleByPackage = async (
 };
 
 // POST completed article by user and package
-
 const addCompletedArticleByUser = async (
   idUser: number,
   completedArticle: ICompletedArticle
@@ -186,7 +189,7 @@ const deleteCompletedArticles = async (idUser: number): Promise<boolean> => {
     .query<ResultSetHeader>('DELETE FROM completedarticles WHERE idUser = ?', [
       idUser,
     ]);
-  return results[0].affectedRows > 0;
+  return results[0].affectedRows >= 0;
 };
 
 export default {

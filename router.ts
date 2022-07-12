@@ -57,6 +57,13 @@ const setupRoutes = (server: Express) => {
     authController.getCurrentSession,
     usersController.deleteBookmarkByUser
   );
+
+  // DELETE all bookmarks by user
+  server.delete(
+    '/api/users/:idUser/bookmarks',
+    authController.getCurrentSession,
+    usersController.deleteAllBookmarksByUser
+  );
   // GET bookmark by user and article
   server.get(
     '/api/users/:idUser/bookmarks/:idArticle',
@@ -66,6 +73,9 @@ const setupRoutes = (server: Express) => {
 
   ///// LOGIN /////
   server.post('/api/login', authController.validateLogin, authController.login);
+
+  ///// PASSWORD /////
+  // server.post('/api/password', authController.validPassword);
 
   ///// ARTICLES /////
   // GET articles
@@ -83,6 +93,7 @@ const setupRoutes = (server: Express) => {
     authController.getCurrentSession,
     usersController.getArticlesByUser
   );
+
   //GET articles by package (articlesPackages)
   server.get(
     '/api/packages/:idPackage/articles',
@@ -159,20 +170,27 @@ const setupRoutes = (server: Express) => {
     usersController.getPackagesByUser
   );
 
-   // POST followedpackages by User (followedPackages)
-   server.post(
+  // POST followedpackages by User (followedPackages)
+  server.post(
     '/api/users/:idUser/followedpackages',
     // packagesController.packageExists,
     packagesController.packageIsNotFollowedByUser,
     usersController.addFollowedPackagesByUser
   );
 
-  // DELETE followedpackages by user
+  // DELETE followedpackages by User (followedPackages)
+  server.delete(
+    '/api/users/:idUser',
+    authController.getCurrentSession,
+    usersController.deleteFollowedPackagesByUser
+  );
+
+  // DELETE  all followedpackages by user
   server.delete(
     '/api/users/:idUser/followedpackages',
     // authController.getCurrentSession,
     packagesController.isPackageFollowedByUser,
-    usersController.deleteFollowedPackages
+    usersController.deleteFollowedPackagesByUser
   );
 
   // POST article by package
@@ -212,4 +230,5 @@ const setupRoutes = (server: Express) => {
   // DELETE faq
   server.delete('/api/faq/:idFaq', faqController.deleteFaq);
 };
+
 export default setupRoutes;

@@ -11,6 +11,7 @@ import IBookmark from '../interfaces/IBookmark';
 import IComment from '../interfaces/IComment';
 import ICompletedArticle from '../interfaces/ICompletedArticle';
 import IFollowedPackage from '../interfaces/IFollowedPackage';
+import IPackage from '../interfaces/IPackage';
 
 // [MIDDLEWARE] Check if user exists
 const userExists = (async (req: Request, res: Response, next: NextFunction) => {
@@ -230,6 +231,23 @@ const addFollowedPackagesByUser = async (
   }
 };
 
+// DELETE followed packages by user
+const deleteFollowedPackagesByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const followedPackageDeleted = await Package.deleteAllFollowedPackage(
+      Number(idUser)
+    ); //boolean
+    followedPackageDeleted ? res.sendStatus(204) : res.sendStatus(500);
+  } catch (err) {
+    next(err);
+  }
+};
+
 //POST comment by user
 const addCommentByUser = async (
   req: Request,
@@ -300,6 +318,24 @@ const deleteBookmarkByUser = async (
   }
 };
 
+// DELETE all bookmarks by user
+const deleteAllBookmarksByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const allBookmarksDeleted = await Bookmark.deleteAllBookmarks(
+      Number(idUser)
+    );
+    // boolean
+    allBookmarksDeleted ? res.sendStatus(204) : res.sendStatus(500);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // DELETE completedArticles by user
 const deleteCompletedArticles = async (
   req: Request,
@@ -325,9 +361,10 @@ const deleteFollowedPackages = async (
 ) => {
   try {
     const { idUser } = req.params;
-    const { idPackage } = req.body;
+    const { idPackage } = req.body as IPackage;
     const followedPackagesDeleted = await Package.deleteFollowedPackages(
-      Number(idUser), Number(idPackage)
+      Number(idUser),
+      Number(idPackage)
     );
     followedPackagesDeleted ? res.sendStatus(204) : res.sendStatus(500);
   } catch (err) {
@@ -343,6 +380,7 @@ export default {
   getUserById,
   getArticlesByUser,
   getBookmarkByUserAndArticle,
+  deleteAllBookmarksByUser,
   getCompletedArticlesByUserAndArticle,
   getPackagesByUser,
   addUser,
@@ -350,6 +388,7 @@ export default {
   addBookmarkByUser,
   addCompletedArticleByUser,
   addFollowedPackagesByUser,
+  deleteFollowedPackagesByUser,
   updateUser,
   deleteUser,
   deleteBookmarkByUser,
