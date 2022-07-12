@@ -6,6 +6,7 @@ import authController from './controllers/auth';
 import categoriesController from './controllers/categories';
 import contactController from './helpers/contact';
 import faqController from './controllers/faqs';
+import guideController from './controllers/guides';
 
 const setupRoutes = (server: Express) => {
   ///// USERS /////
@@ -211,5 +212,18 @@ const setupRoutes = (server: Express) => {
   server.put('/api/faq/:idFaq', faqController.updateFaq);
   // DELETE faq
   server.delete('/api/faq/:idFaq', faqController.deleteFaq);
+
+  ///// GUIDE /////
+  // GET all guides
+  server.get('/api/guide', guideController.getAllGuides);
+  // GET guide by id
+  server.get('/api/guide/:idGuide', guideController.getOneGuide);
+  // POST guide
+  server.post('/api/guide', guideController.addGuide);
+  // PUT guide
+  server.put('/api/guide/:idGuide', guideController.updateGuide);
+  // DELETE guide
+  server.delete('/api/guide/:idGuide', guideController.deleteGuide);
+
 };
 export default setupRoutes;

@@ -11,6 +11,7 @@ import IBookmark from '../interfaces/IBookmark';
 import IComment from '../interfaces/IComment';
 import ICompletedArticle from '../interfaces/ICompletedArticle';
 import IFollowedPackage from '../interfaces/IFollowedPackage';
+import IPackage from '../interfaces/IPackage';
 
 // [MIDDLEWARE] Check if user exists
 const userExists = (async (req: Request, res: Response, next: NextFunction) => {
@@ -325,7 +326,7 @@ const deleteFollowedPackages = async (
 ) => {
   try {
     const { idUser } = req.params;
-    const { idPackage } = req.body;
+    const { idPackage } = req.body as IPackage;
     const followedPackagesDeleted = await Package.deleteFollowedPackages(
       Number(idUser), Number(idPackage)
     );
