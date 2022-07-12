@@ -157,12 +157,13 @@ const setupRoutes = (server: Express) => {
   );
 
   ///// PACKAGES /////
-  // GET packages
+  // GET packages (excluding one user)
   server.get(
-    '/api/packages',
+    '/api/users/:idUser/packages',
     // authController.getCurrentSession,
     packagesController.getAllPackages
   );
+
   // GET followedpackages by User (followedPackages)
   server.get(
     '/api/users/:idUser/followedpackages',
@@ -185,7 +186,7 @@ const setupRoutes = (server: Express) => {
     usersController.deleteFollowedPackagesByUser
   );
 
-  // DELETE  all followedpackages by user
+  // DELETE followedpackages by user
   server.delete(
     '/api/users/:idUser/followedpackages',
     // authController.getCurrentSession,
