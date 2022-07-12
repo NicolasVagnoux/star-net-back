@@ -58,10 +58,12 @@ const isPackageFollowedByUser = (async (
 ) => {
   try {
     const { idUser } = req.params as IUser;
-    const { idPackage }  = req.body as IPackage;
+    const { idPackage } = req.body as IPackage;
     const packageIsFollowed = await Package.getPackagesByUser(Number(idUser));
-    const condition = packageIsFollowed.filter((packagefollowed) => packagefollowed.id === idPackage).length;
-    if ( condition !== 1) {
+    const condition = packageIsFollowed.filter(
+      (packagefollowed) => packagefollowed.id === idPackage
+    ).length;
+    if (condition !== 1) {
       next(new ErrorHandler(404, 'This package is not followed by user'));
     } else {
       next();
@@ -101,7 +103,8 @@ const getAllPackages = (async (
   next: NextFunction
 ) => {
   try {
-    const packages = await Package.getAllPackages();
+    const { idUser } = req.params as IUser;
+    const packages = await Package.getAllPackages(Number(idUser));
     return res.status(200).json(packages);
   } catch (err) {
     next(err);
