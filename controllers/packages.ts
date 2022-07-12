@@ -35,10 +35,12 @@ const packageIsNotFollowedByUser = (async (
 ) => {
   try {
     const { idUser } = req.params as IUser;
-    const { idPackage }  = req.body as IPackage;
+    const { idPackage } = req.body as IPackage;
     const packageIsFollowed = await Package.getPackagesByUser(Number(idUser));
-    const condition = packageIsFollowed.filter((packagefollowed) => packagefollowed.id === idPackage).length;
-    if ( condition > 0) {
+    const condition = packageIsFollowed.filter(
+      (packagefollowed) => packagefollowed.id === idPackage
+    ).length;
+    if (condition > 0) {
       next(new ErrorHandler(404, 'This package is already followed'));
     } else {
       next();
@@ -137,7 +139,6 @@ const getCategoriesByPackage = (async (
 }) as RequestHandler;
 
 // GET completArticle by user and package
-
 const getCompletedArticlesByUserAndPackage = async (
   req: Request,
   res: Response,
@@ -154,6 +155,7 @@ const getCompletedArticlesByUserAndPackage = async (
     next(err);
   }
 };
+
 // POST article by package
 const addArticleByPackage = async (
   req: Request,

@@ -4,4 +4,5 @@ export default interface IFaq extends RowDataPacket {
     id: number;
     question: string;
     answer: string;
+    orderNumber: number;
 }
