@@ -36,12 +36,12 @@ const packageIsNotFollowedByUser = (async (
   try {
     const { idUser } = req.params;
     const { idPackage } = req.body as IPackage;
-    const packageIsFollowed = await Package.getFollowedPackagesByUser(
+    const packageIsFollowed = await Package.getFollowedPackageByUser(
       Number(idUser),
       Number(idPackage)
     );
-    const condition = packageIsFollowed.filter(
-      (packagefollowed: { id: number }) => packagefollowed.id === Number(idPackage)
+    const condition = [packageIsFollowed].filter(
+      (packagefollowed: { id: number }) => packagefollowed?.id === Number(idPackage)
     ).length;
     if (condition > 0) {
       next(new ErrorHandler(404, 'This package is already followed'));
@@ -61,12 +61,12 @@ const isPackageFollowedByUser = (async (
 ) => {
   try {
     const { idUser, idPackage } = req.params;
-    const packageIsFollowed = await Package.getFollowedPackagesByUser(
+    const packageIsFollowed = await Package.getFollowedPackageByUser(
       Number(idUser),
       Number(idPackage)
     );
-    const condition = packageIsFollowed.filter(
-      (packagefollowed: { id: number; }) => packagefollowed.id === Number(idPackage)
+    const condition = [packageIsFollowed].filter(
+      (packagefollowed: { id: number; }) => packagefollowed?.id === Number(idPackage)
     ).length;
     if (condition !== 1) {
       next(new ErrorHandler(404, 'This package is not followed by user'));

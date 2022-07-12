@@ -155,7 +155,7 @@ const getFollowedPackagesByUserAndPackage = (async (
 ) => {
   try {
     const { idUser, idPackage } = req.params; // le params récupéré dans la requête est un string
-    const packages = await Package.getFollowedPackagesByUser(
+    const packages = await Package.getFollowedPackageByUser(
       Number(idUser),
       Number(idPackage)
     ); // conversion avec Number du string en number

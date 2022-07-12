@@ -31,8 +31,8 @@ const getPackagesByUserId = async (idUser: number): Promise<IPackage[]> => {
 };
 
 // GET followedpackages by idUser
-const getFollowedPackagesByUser = async (idUser: number, idPackage: number): Promise<IPackage[]> => {
-  const results = await connection
+const getFollowedPackageByUser = async (idUser: number, idPackage: number): Promise<IPackage> => {
+  const [results] = await connection
     .promise()
     .query<IPackage[]>(
       'SELECT packages.* FROM packages INNER JOIN followedPackages ON packages.id = followedPackages.idPackage WHERE followedPackages.idUser = ? AND packages.id = ?',
@@ -97,7 +97,7 @@ export default {
   getAllPackages,
   getPackageById,
   getPackagesByUserId,
-  getFollowedPackagesByUser,
+  getFollowedPackageByUser,
   getArticlePackageByIds,
   addFollowedPackagesByUser,
   deleteFollowedPackageByUserAndPackage,
