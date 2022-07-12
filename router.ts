@@ -171,7 +171,13 @@ const setupRoutes = (server: Express) => {
     usersController.getPackagesByUser
   );
 
-  // POST followedpackages by User (followedPackages)
+   // GET followedpackages by User AND packages (check)
+   server.get(
+    '/api/users/:idUser/followedpackages/:idPackage',
+    usersController.getFollowedPackagesByUserAndPackage
+  );
+
+  // ADD/POST followedpackages by User (followedPackages)
   server.post(
     '/api/users/:idUser/followedpackages',
     // packagesController.packageExists,
@@ -188,7 +194,7 @@ const setupRoutes = (server: Express) => {
 
   // DELETE followedpackages by user
   server.delete(
-    '/api/users/:idUser/followedpackages',
+    '/api/users/:idUser/followedpackages/:idPackage',
     // authController.getCurrentSession,
     packagesController.isPackageFollowedByUser,
     usersController.deleteFollowedPackagesByUser

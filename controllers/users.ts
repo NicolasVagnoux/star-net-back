@@ -11,7 +11,6 @@ import IBookmark from '../interfaces/IBookmark';
 import IComment from '../interfaces/IComment';
 import ICompletedArticle from '../interfaces/ICompletedArticle';
 import IFollowedPackage from '../interfaces/IFollowedPackage';
-import IPackage from '../interfaces/IPackage';
 
 // [MIDDLEWARE] Check if user exists
 const userExists = (async (req: Request, res: Response, next: NextFunction) => {
@@ -148,6 +147,24 @@ const getCompletedArticlesByUserAndArticle = async (
   }
 };
 
+// GET followed by user and packages (followedPackages)
+const getFollowedPackagesByUserAndPackage = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser, idPackage } = req.params; // le params récupéré dans la requête est un string
+    const packages = await Package.getFollowedPackagesByUser(
+      Number(idUser),
+      Number(idPackage)
+    ); // conversion avec Number du string en number
+    return res.status(200).json(packages);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
 // GET packages by user (followedPackages)
 const getPackagesByUser = async (
   req: Request,
@@ -156,7 +173,7 @@ const getPackagesByUser = async (
 ) => {
   try {
     const { idUser } = req.params; // le params récupéré dans la requête est un string
-    const packages = await Package.getPackagesByUser(Number(idUser)); // conversion avec Number du string en number
+    const packages = await Package.getPackagesByUserId(Number(idUser)); // conversion avec Number du string en number
     return res.status(200).json(packages);
   } catch (err) {
     next(err);
@@ -238,9 +255,10 @@ const deleteFollowedPackagesByUser = async (
   next: NextFunction
 ) => {
   try {
-    const { idUser } = req.params;
-    const followedPackageDeleted = await Package.deleteAllFollowedPackage(
-      Number(idUser)
+    const { idUser, idPackage } = req.params;
+    const followedPackageDeleted = await Package.deleteFollowedPackageByUserAndPackage(
+      Number(idUser),
+      Number(idPackage)
     ); //boolean
     followedPackageDeleted ? res.sendStatus(204) : res.sendStatus(500);
   } catch (err) {
@@ -360,9 +378,8 @@ const deleteFollowedPackages = async (
   next: NextFunction
 ) => {
   try {
-    const { idUser } = req.params;
-    const { idPackage } = req.body as IPackage;
-    const followedPackagesDeleted = await Package.deleteFollowedPackages(
+    const { idUser,idPackage } = req.params;
+    const followedPackagesDeleted = await Package.deleteFollowedPackageByUserAndPackage(
       Number(idUser),
       Number(idPackage)
     );
@@ -383,6 +400,7 @@ export default {
   deleteAllBookmarksByUser,
   getCompletedArticlesByUserAndArticle,
   getPackagesByUser,
+  getFollowedPackagesByUserAndPackage,
   addUser,
   addCommentByUser,
   addBookmarkByUser,
