@@ -6,7 +6,7 @@ import { ResultSetHeader } from 'mysql2';
 const getAllFaqs = async () : Promise<IFaq[]> => {
     const results = await connection
     .promise()
-    .query<IFaq[]>('SELECT * FROM faqs');
+    .query<IFaq[]>('SELECT * FROM faqs ORDER BY orderNumber');
     return results[0];
 };
 
@@ -25,8 +25,8 @@ const addFaq = async (newFaq: IFaq): Promise<number> => {
   const results = await connection
     .promise()
     .query<ResultSetHeader>(
-      'INSERT INTO faqs (question, answer) VALUES (?,?)',
-      [newFaq.question, newFaq.answer]
+      'INSERT INTO faqs (question, answer, orderNumber) VALUES (?,?,?)',
+      [newFaq.question, newFaq.answer, newFaq.orderNumber]
     );
   return results[0].insertId;
 };
@@ -44,6 +44,11 @@ const updateFaq = async (idFaq: number, faq: IFaq): Promise<boolean> => {
     if (faq.answer) {
       sql += oneValue ? ' , answer = ? ' : ' answer = ? ';
       sqlValues.push(faq.answer);
+      oneValue = true;
+    }
+    if (faq.orderNumber) {
+      sql += oneValue ? ' , orderNumber = ? ' : ' orderNumber = ? ';
+      sqlValues.push(faq.orderNumber);
       oneValue = true;
     }
     sql += ' WHERE id = ?';

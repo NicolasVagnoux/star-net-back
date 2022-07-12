@@ -58,8 +58,22 @@ const addFollowedPackagesByUser = async (
   return results[0].insertId;
 };
 
-// DELETE followed package by user
-const deleteFollowedPackage = async (idUser: number): Promise<boolean> => {
+// DELETE followed package by user and package
+const deleteFollowedPackages = async (
+  idUser: number,
+  idPackage: number
+): Promise<boolean> => {
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>(
+      'DELETE FROM followedpackages WHERE idUser = ? AND idPackage = ?',
+      [idUser, idPackage]
+    );
+  return results[0].affectedRows > 0;
+};
+
+// DELETE all followed package by user
+const deleteAllFollowedPackage = async (idUser: number): Promise<boolean> => {
   const results = await connection
     .promise()
     .query<ResultSetHeader>('DELETE FROM followedpackages WHERE idUser = ?', [
@@ -74,5 +88,6 @@ export default {
   getPackagesByUser,
   getArticlePackageByIds,
   addFollowedPackagesByUser,
-  deleteFollowedPackage,
+  deleteFollowedPackages,
+  deleteAllFollowedPackage,
 };
