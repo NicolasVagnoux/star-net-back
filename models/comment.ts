@@ -1,14 +1,30 @@
-import IComment from "../interfaces/IComment";
+import IComment from '../interfaces/IComment';
 import connection from '../db-config';
 import { ResultSetHeader } from 'mysql2';
 
-// POST comment
-const addComment = async (idUser : number, comment : IComment) : Promise<number> => {
-    const results = await connection
+// GET comments by article
+const getCommentsByArticle = async (idArticle: number): Promise<IComment[]> => {
+  const results = await connection
     .promise()
-    .query<ResultSetHeader>('INSERT INTO comments (idUser, text, rating, idArticle) VALUES (?,?,?,?)',
-    [idUser,comment.text,comment.rating, comment.idArticle]);
-    return results[0].insertId;
+    .query<IComment[]>(
+      'SELECT id, text, DATE_FORMAT(date, "%d/%m/%Y") AS date,report, idUser, idArticle FROM comments WHERE idArticle = ?',
+      [idArticle]
+    );
+  return results[0];
 };
 
-export default { addComment};
+// POST comment
+const addComment = async (
+  idUser: number,
+  comment: IComment
+): Promise<number> => {
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>(
+      'INSERT INTO comments (idUser, text, rating, idArticle) VALUES (?,?,?,?)',
+      [idUser, comment.text, comment.rating, comment.idArticle]
+    );
+  return results[0].insertId;
+};
+
+export default { addComment, getCommentsByArticle };

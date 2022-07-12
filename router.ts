@@ -116,6 +116,12 @@ const setupRoutes = (server: Express) => {
     usersController.getCompletedArticlesByUserAndArticle
   );
 
+  // GET comments by article
+  server.get(
+    '/api/articles/:idArticle/comments',
+    articlesController.getCommentsByArticle
+  );
+
   // POST completed article by user
   server.post(
     '/api/users/:idUser/completedArticles',
@@ -243,7 +249,6 @@ const setupRoutes = (server: Express) => {
   server.put('/api/guide/:idGuide', guideController.updateGuide);
   // DELETE guide
   server.delete('/api/guide/:idGuide', guideController.deleteGuide);
-
 };
 
 export default setupRoutes;
