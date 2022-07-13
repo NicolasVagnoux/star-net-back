@@ -92,6 +92,35 @@ const setupRoutes = (server: Express) => {
     '/api/packages/:idPackage/articles',
     packagesController.getArticlesByPackage
   );
+  //GET completedArticles by user and packages
+  server.get(
+    '/api/users/:idUser/packages/:idPackage/completedArticles',
+    usersController.userExists,
+    authController.getCurrentSession,
+    packagesController.packageExists,
+    packagesController.getCompletedArticlesByUserAndPackage
+  );
+
+  //GET completedArticles by user and article
+  server.get(
+    '/api/users/:idUser/completedArticles/:idArticle',
+    authController.getCurrentSession,
+    usersController.getCompletedArticlesByUserAndArticle
+  );
+
+  // GET comments by article
+  server.get(
+    '/api/articles/:idArticle/comments',
+    articlesController.getCommentsByArticle
+  );
+
+  // POST completed article by user
+  server.post(
+    '/api/users/:idUser/completedArticles',
+    authController.getCurrentSession,
+    usersController.addCompletedArticleByUser
+  );
+
   //POST article
   server.post(
     '/api/articles',
