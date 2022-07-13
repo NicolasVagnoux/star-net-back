@@ -25,20 +25,6 @@ const setupRoutes = (server: Express) => {
     usersController.emailIsFree,
     usersController.addUser
   );
-  // POST bookmark by user
-  server.post(
-    '/api/users/:idUser/bookmarks',
-    authController.getCurrentSession,
-    usersController.addBookmarkByUser
-  );
-
-  // POST comments by user
-  server.post(
-    '/api/users/:idUser/comments',
-    authController.getCurrentSession,
-    usersController.addCommentByUser
-  );
-
   // PUT user
   server.put(
     '/api/users/:idUser',
@@ -52,13 +38,20 @@ const setupRoutes = (server: Express) => {
     usersController.userExists,
     usersController.deleteUser
   );
+
+  ///// BOOKMARKS /////
+  // POST bookmark by user
+  server.post(
+    '/api/users/:idUser/bookmarks',
+    authController.getCurrentSession,
+    usersController.addBookmarkByUser
+  );
   // DELETE bookmark by user
   server.delete(
     '/api/users/:idUser/bookmarks/:idArticle',
     authController.getCurrentSession,
     usersController.deleteBookmarkByUser
   );
-
   // DELETE all bookmarks by user
   server.delete(
     '/api/users/:idUser/bookmarks',
@@ -94,7 +87,6 @@ const setupRoutes = (server: Express) => {
     authController.getCurrentSession,
     usersController.getArticlesByUser
   );
-
   //GET articles by package (articlesPackages)
   server.get(
     '/api/packages/:idPackage/articles',
@@ -149,13 +141,33 @@ const setupRoutes = (server: Express) => {
     articlesController.deleteArticle
   );
 
+  ///// COMPLETED ARTICLES /////
+  //GET completedArticles by user and packages
+  server.get(
+    '/api/users/:idUser/packages/:idPackage/completedArticles',
+    usersController.userExists,
+    authController.getCurrentSession,
+    packagesController.packageExists,
+    packagesController.getCompletedArticlesByUserAndPackage
+  );
+  //GET completedArticles by user and article
+  server.get(
+    '/api/users/:idUser/completedArticles/:idArticle',
+    authController.getCurrentSession,
+    usersController.getCompletedArticlesByUserAndArticle
+  );
   // POST completed article by user
   server.post(
     '/api/users/:idUser/completedArticles',
     authController.getCurrentSession,
     usersController.addCompletedArticleByUser
   );
-
+  // POST completed article by user
+  server.post(
+    '/api/users/:idUser/completedArticles',
+    authController.getCurrentSession,
+    usersController.addCompletedArticleByUser
+  );
   // DELETE completedArticles by user
   server.delete(
     '/api/users/:idUser/completedArticles',
@@ -170,20 +182,26 @@ const setupRoutes = (server: Express) => {
     // authController.getCurrentSession,
     packagesController.getAllPackages
   );
+  // POST article by package
+  server.post(
+    '/api/packages/:idPackage/articles',
+    packagesController.packageExists,
+    packagesController.articlePackageExists,
+    packagesController.addArticleByPackage
+  );
 
+  ///// FOLLOWED PACKAGES /////
   // GET followedpackages by User (followedPackages)
   server.get(
     '/api/users/:idUser/followedpackages',
     usersController.userExists,
     usersController.getPackagesByUser
   );
-
-   // GET followedpackages by User AND packages (check)
-   server.get(
+  // GET followedpackages by User AND packages (check)
+  server.get(
     '/api/users/:idUser/followedpackages/:idPackage',
     usersController.getFollowedPackagesByUserAndPackage
   );
-
   // ADD/POST followedpackages by User (followedPackages)
   server.post(
     '/api/users/:idUser/followedpackages',
@@ -191,28 +209,18 @@ const setupRoutes = (server: Express) => {
     packagesController.packageIsNotFollowedByUser,
     usersController.addFollowedPackagesByUser
   );
-
-  // DELETE followedpackages by User (followedPackages)
+  // DELETE all followedpackages by user
   server.delete(
     '/api/users/:idUser',
     authController.getCurrentSession,
     usersController.deleteFollowedPackagesByUser
   );
-
-  // DELETE followedpackages by user
+  // DELETE followedpackages by user by package
   server.delete(
     '/api/users/:idUser/followedpackages/:idPackage',
     // authController.getCurrentSession,
     packagesController.isPackageFollowedByUser,
     usersController.deleteFollowedPackagesByUser
-  );
-
-  // POST article by package
-  server.post(
-    '/api/packages/:idPackage/articles',
-    packagesController.packageExists,
-    packagesController.articlePackageExists,
-    packagesController.addArticleByPackage
   );
 
   ///// CATEGORIES /////
@@ -255,6 +263,19 @@ const setupRoutes = (server: Express) => {
   server.put('/api/guide/:idGuide', guideController.updateGuide);
   // DELETE guide
   server.delete('/api/guide/:idGuide', guideController.deleteGuide);
+
+  ///// COMMENT /////
+  // GET all comments
+  server.get('/api/comments', usersController.getComment);
+
+  // POST comments by user
+  server.post('/api/users/:idUser/comments', usersController.addCommentByUser);
+
+  // PUT comment by user
+  server.put(
+    '/api/users/:idUser/comments/:idComment',
+    usersController.updateComment
+  );
 };
 
 export default setupRoutes;

@@ -13,6 +13,20 @@ const getCommentsByArticle = async (idArticle: number): Promise<IComment[]> => {
   return results[0];
 };
 
+// GET all comments
+const getAllComments = async (): Promise<IComment[]> => {
+  const sql = 'SELECT * FROM comments';
+  const results = await connection.promise().query<IComment[]>(sql);
+  return results[0];
+};
+
+// GET comment by user
+const getCommentByUser = async (): Promise<IComment[]> => {
+  const sql = 'SELECT * FROM comments WHERE idUser=?';
+  const results = await connection.promise().query<IComment[]>(sql);
+  return results[0];
+};
+
 // POST comment
 const addComment = async (
   idUser: number,
@@ -27,4 +41,19 @@ const addComment = async (
   return results[0].insertId;
 };
 
-export default { addComment, getCommentsByArticle };
+//  PUT comment by user
+const updateCommentByUser = async (idUser: number): Promise<boolean> => {
+  const sql = `UPDATE comments SET idUser = (SELECT id FROM users WHERE lastName='Inconnu') WHERE idUser= ?`;
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>(sql, [idUser]);
+  return results[0].affectedRows > 0;
+};
+
+export default {
+  addComment,
+  getCommentsByArticle,
+  getCommentByUser,
+  getAllComments,
+  updateCommentByUser,
+};
