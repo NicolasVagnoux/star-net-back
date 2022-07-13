@@ -248,7 +248,7 @@ const addFollowedPackagesByUser = async (
   }
 };
 
-// DELETE followed packages by user
+// DELETE followed packages by user by package
 const deleteFollowedPackagesByUser = async (
   req: Request,
   res: Response,
@@ -256,18 +256,29 @@ const deleteFollowedPackagesByUser = async (
 ) => {
   try {
     const { idUser, idPackage } = req.params;
-    const followedPackageDeleted = await Package.deleteFollowedPackageByUserAndPackage(
-      Number(idUser),
-      Number(idPackage)
-    ); //boolean
+    const followedPackageDeleted =
+      await Package.deleteFollowedPackageByUserAndPackage(
+        Number(idUser),
+        Number(idPackage)
+      ); //boolean
     followedPackageDeleted ? res.sendStatus(204) : res.sendStatus(500);
   } catch (err) {
     next(err);
   }
 };
 
+// GET all comments
+const getComment = (async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const comments = await Comment.getAllComments();
+    return res.status(200).json(comments);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
 //POST comment by user
-const addCommentByUser = async (
+const addCommentByUser = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -281,7 +292,29 @@ const addCommentByUser = async (
   } catch (err) {
     next(err);
   }
-};
+}) as RequestHandler;
+
+// PUT comment
+const updateComment = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const { idComment } = req.params;
+    const commentUpdated = await Comment.updateCommentByUser(Number(idUser));
+    console.log(idComment);
+    if (commentUpdated) {
+      const comment = await Comment.getCommentByUser();
+      res.status(200).send(comment);
+    } else {
+      throw new ErrorHandler(500, 'Comment cannot be updated');
+    }
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
 
 //PUT user
 const updateUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -371,19 +404,37 @@ const deleteCompletedArticles = async (
   }
 };
 
-// DELETE followedpackages by user
+// DELETE followedpackages by user by package
 const deleteFollowedPackages = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { idUser,idPackage } = req.params;
-    const followedPackagesDeleted = await Package.deleteFollowedPackageByUserAndPackage(
-      Number(idUser),
-      Number(idPackage)
-    );
+    const { idUser, idPackage } = req.params;
+    const followedPackagesDeleted =
+      await Package.deleteFollowedPackageByUserAndPackage(
+        Number(idUser),
+        Number(idPackage)
+      );
     followedPackagesDeleted ? res.sendStatus(204) : res.sendStatus(500);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// DELETE followedpackages by user by package
+const deleteAllFollowedPackages = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const allFollowedPackagesDeleted = await Package.deleteAllFollowedPackages(
+      Number(idUser)
+    );
+    allFollowedPackagesDeleted ? res.sendStatus(204) : res.sendStatus(500);
   } catch (err) {
     next(err);
   }
@@ -402,7 +453,9 @@ export default {
   getPackagesByUser,
   getFollowedPackagesByUserAndPackage,
   addUser,
+  getComment,
   addCommentByUser,
+  updateComment,
   addBookmarkByUser,
   addCompletedArticleByUser,
   addFollowedPackagesByUser,
@@ -412,4 +465,5 @@ export default {
   deleteBookmarkByUser,
   deleteCompletedArticles,
   deleteFollowedPackages,
+  deleteAllFollowedPackages,
 };

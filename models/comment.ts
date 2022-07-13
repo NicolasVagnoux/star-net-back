@@ -1,14 +1,47 @@
-import IComment from "../interfaces/IComment";
+import IComment from '../interfaces/IComment';
 import connection from '../db-config';
 import { ResultSetHeader } from 'mysql2';
 
-// POST comment
-const addComment = async (idUser : number, comment : IComment) : Promise<number> => {
-    const results = await connection
-    .promise()
-    .query<ResultSetHeader>('INSERT INTO comments (idUser, text, rating, idArticle) VALUES (?,?,?,?)',
-    [idUser,comment.text,comment.rating, comment.idArticle]);
-    return results[0].insertId;
+// GET all comments
+const getAllComments = async (): Promise<IComment[]> => {
+  const sql = 'SELECT * FROM comments';
+  const results = await connection.promise().query<IComment[]>(sql);
+  return results[0];
 };
 
-export default { addComment};
+// GET comment by user
+const getCommentByUser = async (): Promise<IComment[]> => {
+  const sql = 'SELECT * FROM comments WHERE idUser=?';
+  const results = await connection.promise().query<IComment[]>(sql);
+  return results[0];
+};
+
+// POST comment
+const addComment = async (
+  idUser: number,
+  comment: IComment
+): Promise<number> => {
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>(
+      'INSERT INTO comments (idUser, text, idArticle) VALUES (?,?,?)',
+      [idUser, comment.text, comment.idArticle]
+    );
+  return results[0].insertId;
+};
+
+//  PUT comment
+const updateCommentByUser = async (idUser: number): Promise<boolean> => {
+  const sql = `UPDATE comments SET idUser = (SELECT id FROM users WHERE lastName='Inconnu') WHERE idUser= ?`;
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>(sql, [idUser]);
+  return results[0].affectedRows > 0;
+};
+
+export default {
+  getAllComments,
+  getCommentByUser,
+  addComment,
+  updateCommentByUser,
+};
