@@ -35,8 +35,8 @@ const addComment = async (
   const results = await connection
     .promise()
     .query<ResultSetHeader>(
-      'INSERT INTO comments (idUser, title, text, rating, idArticle) VALUES (?,?,?,?,?)',
-      [idUser, comment.title, comment.text, comment.rating, comment.idArticle]
+      'INSERT INTO comments (idUser, title, text, date, idArticle) VALUES (?,?,?,NOW(),?)',
+      [idUser, comment.title, comment.text, comment.idArticle]
     );
   return results[0].insertId;
 };
