@@ -55,7 +55,7 @@ const setupRoutes = (server: Express) => {
   // DELETE all bookmarks by user
   server.delete(
     '/api/users/:idUser/bookmarks',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     usersController.deleteAllBookmarksByUser
   );
   // GET bookmark by user and article
@@ -171,7 +171,7 @@ const setupRoutes = (server: Express) => {
   // DELETE completedArticles by user
   server.delete(
     '/api/users/:idUser/completedArticles',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     usersController.deleteCompletedArticles
   );
 
@@ -202,7 +202,7 @@ const setupRoutes = (server: Express) => {
     '/api/users/:idUser/followedpackages/:idPackage',
     usersController.getFollowedPackagesByUserAndPackage
   );
-  // ADD/POST followedpackages by User (followedPackages)
+  // POST followedpackages by User (followedPackages)
   server.post(
     '/api/users/:idUser/followedpackages',
     // packagesController.packageExists,
@@ -211,9 +211,9 @@ const setupRoutes = (server: Express) => {
   );
   // DELETE all followedpackages by user
   server.delete(
-    '/api/users/:idUser',
-    authController.getCurrentSession,
-    usersController.deleteFollowedPackagesByUser
+    '/api/users/:idUser/followedpackages',
+    // authController.getCurrentSession,
+    usersController.deleteAllFollowedPackages
   );
   // DELETE followedpackages by user by package
   server.delete(
