@@ -388,7 +388,7 @@ const deleteAllBookmarksByUser = (async (
 }) as RequestHandler;
 
 // DELETE completedArticles by user
-const deleteCompletedArticles = async (
+const deleteCompletedArticles = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -402,7 +402,7 @@ const deleteCompletedArticles = async (
   } catch (err) {
     next(err);
   }
-};
+}) as RequestHandler;
 
 // DELETE followedpackages by user by package
 const deleteFollowedPackages = async (
@@ -423,8 +423,8 @@ const deleteFollowedPackages = async (
   }
 };
 
-// DELETE followedpackages by user
-const deleteAllFollowedPackages = async (
+// DELETE all followedpackages by user
+const deleteAllFollowedPackages = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -438,7 +438,7 @@ const deleteAllFollowedPackages = async (
   } catch (err) {
     next(err);
   }
-};
+}) as RequestHandler;
 
 export default {
   userExists,

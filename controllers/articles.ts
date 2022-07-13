@@ -3,31 +3,35 @@ import { ErrorHandler } from '../helpers/errors';
 import Joi from 'joi';
 import Article from '../models/article';
 import Category from '../models/category';
+import Comment from '../models/comment';
 import IArticle from '../interfaces/IArticle';
-
 
 // [MIDDLEWARE] Article Validation with JOI
 const validateArticle = (req: Request, res: Response, next: NextFunction) => {
-  let required : Joi.PresenceMode = 'optional'; // On créé une variable required qui définit si les données sont requises ou non. Si la méthode est POST, le required devient obligatoire (mais pas si la méthode est PUT).
+  let required: Joi.PresenceMode = 'optional'; // On créé une variable required qui définit si les données sont requises ou non. Si la méthode est POST, le required devient obligatoire (mais pas si la méthode est PUT).
   if (req.method === 'POST') {
-      required = 'required';
+    required = 'required';
   }
   const errors = Joi.object({
-      title: Joi.string().max(80).presence(required),
-      idUser: Joi.number().integer().min(1).presence(required),
-      mainImage: Joi.string().max(255).presence(required),
-      mainContent: Joi.string().presence(required),
-      id: Joi.number().optional(),
+    title: Joi.string().max(80).presence(required),
+    idUser: Joi.number().integer().min(1).presence(required),
+    mainImage: Joi.string().max(255).presence(required),
+    mainContent: Joi.string().presence(required),
+    id: Joi.number().optional(),
   }).validate(req.body, { abortEarly: false }).error;
   if (errors) {
-      next(new ErrorHandler(422, errors.message));
+    next(new ErrorHandler(422, errors.message));
   } else {
-      next();
+    next();
   }
 };
 
 // [MIDDLEWARE] Check if article exists
-const articleExists = (async (req: Request, res: Response, next: NextFunction) => {
+const articleExists = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { idArticle } = req.params;
     const articleExists = await Article.getArticleById(Number(idArticle));
@@ -87,48 +91,85 @@ const getCategoriesByArticle = (async (
   }
 }) as RequestHandler;
 
+//GET comments by article
+
+const getCommentsByArticle = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idArticle } = req.params;
+    const comments = await Comment.getCommentsByArticle(Number(idArticle));
+    return res.status(200).json(comments);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
 // POST article
 const addArticle = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const article = req.body as IArticle;
     article.id = await Article.addArticle(article);
     res.status(201).json(article);
-  } catch(err) {
-    console.log(err)
+  } catch (err) {
+    console.log(err);
     next(err);
   }
 };
 
 //PUT article
-const updateArticle = async (req: Request, res: Response, next: NextFunction) => {
+const updateArticle = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { idArticle } = req.params;
-    const articleUpdated = await Article.updateArticle(Number(idArticle), req.body as IArticle); //articleUpdated => boolean
+    const articleUpdated = await Article.updateArticle(
+      Number(idArticle),
+      req.body as IArticle
+    ); //articleUpdated => boolean
     if (articleUpdated) {
       const article = await Article.getArticleById(Number(idArticle));
       res.status(200).send(article); // react-admin needs this response
     } else {
-        throw new ErrorHandler(500, 'Article cannot be updated');
+      throw new ErrorHandler(500, 'Article cannot be updated');
     }
-  } catch(err) {
+  } catch (err) {
     next(err);
   }
 };
 
 //DELETE article
-const deleteArticle = async (req: Request, res: Response, next: NextFunction) => {
+const deleteArticle = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { idArticle } = req.params;
     const article = await Article.getArticleById(Number(idArticle));
     const articleDeleted = await Article.deleteArticle(Number(idArticle)); //articleDelected => boolean
-    if(articleDeleted) {
+    if (articleDeleted) {
       res.status(200).send(article); //needed by react-admin
     } else {
       throw new ErrorHandler(500, 'Article cannot be deleted');
     }
-  } catch(err) {
+  } catch (err) {
     next(err);
   }
 };
 
-export default { validateArticle, articleExists, getAllArticles, getOneArticle, getCategoriesByArticle, addArticle, updateArticle, deleteArticle };
+export default {
+  validateArticle,
+  articleExists,
+  getAllArticles,
+  getOneArticle,
+  getCategoriesByArticle,
+  addArticle,
+  updateArticle,
+  deleteArticle,
+  getCommentsByArticle,
+};
