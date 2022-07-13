@@ -30,7 +30,7 @@ const addComment = async (
   return results[0].insertId;
 };
 
-//  PUT comment
+//  PUT comment by user
 const updateCommentByUser = async (idUser: number): Promise<boolean> => {
   const sql = `UPDATE comments SET idUser = (SELECT id FROM users WHERE lastName='Inconnu') WHERE idUser= ?`;
   const results = await connection

@@ -370,7 +370,7 @@ const deleteBookmarkByUser = async (
 };
 
 // DELETE all bookmarks by user
-const deleteAllBookmarksByUser = async (
+const deleteAllBookmarksByUser = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -385,7 +385,7 @@ const deleteAllBookmarksByUser = async (
   } catch (err) {
     next(err);
   }
-};
+}) as RequestHandler;
 
 // DELETE completedArticles by user
 const deleteCompletedArticles = async (
@@ -423,7 +423,7 @@ const deleteFollowedPackages = async (
   }
 };
 
-// DELETE followedpackages by user by package
+// DELETE followedpackages by user
 const deleteAllFollowedPackages = async (
   req: Request,
   res: Response,
