@@ -31,7 +31,10 @@ const getPackagesByUserId = async (idUser: number): Promise<IPackage[]> => {
 };
 
 // GET followedpackages by idUser
-const getFollowedPackageByUser = async (idUser: number, idPackage: number): Promise<IPackage> => {
+const getFollowedPackageByUser = async (
+  idUser: number,
+  idPackage: number
+): Promise<IPackage> => {
   const [results] = await connection
     .promise()
     .query<IPackage[]>(
@@ -84,13 +87,13 @@ const deleteFollowedPackageByUserAndPackage = async (
 };
 
 // DELETE all followed package by user
-const deleteAllFollowedPackage = async (idUser: number): Promise<boolean> => {
+const deleteAllFollowedPackages = async (idUser: number): Promise<boolean> => {
   const results = await connection
     .promise()
     .query<ResultSetHeader>('DELETE FROM followedpackages WHERE idUser = ?', [
       idUser,
     ]);
-  return results[0].affectedRows >= 0;
+  return results[0].affectedRows > 0;
 };
 
 export default {
@@ -101,5 +104,5 @@ export default {
   getArticlePackageByIds,
   addFollowedPackagesByUser,
   deleteFollowedPackageByUserAndPackage,
-  deleteAllFollowedPackage,
+  deleteAllFollowedPackages,
 };
