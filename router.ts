@@ -108,6 +108,13 @@ const setupRoutes = (server: Express) => {
     usersController.getCompletedArticlesByUserAndArticle
   );
 
+  //GET completedArticles by user 
+  server.get(
+    '/api/users/:idUser/completedArticles/',
+    // authController.getCurrentSession,
+    usersController.getCompletedArticlesByUser
+  );
+
   // GET comments by article
   server.get(
     '/api/articles/:idArticle/comments',
