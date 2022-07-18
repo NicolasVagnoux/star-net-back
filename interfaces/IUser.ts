@@ -12,5 +12,5 @@ export default interface IUser extends RowDataPacket {
     hashedPassword: string;
     idTheme: number;
     idLanguage: number;
-    idRight: number;
+    isAdmin: number;
 }
