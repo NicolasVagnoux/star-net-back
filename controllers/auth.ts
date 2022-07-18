@@ -61,10 +61,11 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         user.hashedPassword
       );
       if (passwordIsCorrect) {
-        const token = calculateToken(email, user.id, user.idRight);
+        const token = calculateToken(email, user.id);
         res.cookie('user_token', token, { sameSite: 'none', secure: true }); // mandatory because front and back have different domains
         res.status(200).json({
           id: user.id,
+          isAdmin: user.isAdmin,
         });
       } else {
         throw new ErrorHandler(401, 'Wrong Password');

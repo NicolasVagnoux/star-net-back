@@ -38,12 +38,13 @@ const validateUser = (req: Request, res: Response, next: NextFunction) => {
     lastName: Joi.string().max(80).presence(required),
     phoneNumber: Joi.string().max(40).optional(),
     email: Joi.string().email().max(150).presence(required),
-    userPicture: Joi.string().max(500).optional(),
+    userPicture: [Joi.string().max(500).optional(), Joi.allow(null)],
     password: Joi.string().min(6).max(50).presence(required),
     idTheme: Joi.number().min(1).max(10).optional(),
     idLanguage: Joi.number().min(1).max(10).optional(),
-    idRight: Joi.number().min(1).max(10).optional(),
+    isAdmin: Joi.number().min(0).max(1).optional(),
     id: Joi.number().optional(),
+    registrationDate: Joi.date().optional(),
   }).validate(req.body, { abortEarly: false }).error;
   if (errors) {
     next(new ErrorHandler(422, errors.message));
@@ -79,6 +80,13 @@ const getAllUsers = (async (
 ) => {
   try {
     const users = await User.getAllUsers();
+
+    // react-admin
+    res.setHeader(
+      'Content-Range',
+      `users : 0-${users.length}/${users.length + 1}`
+    );
+
     return res.status(200).json(users);
   } catch (err) {
     next(err);
