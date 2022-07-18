@@ -156,7 +156,7 @@ const getCompletedArticlesByUserAndArticle = async (
 };
 
 //GET completed by user
-const getCompletedArticlesByUser = async (
+const getCompletedArticlesByUser = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -169,7 +169,7 @@ const getCompletedArticlesByUser = async (
   } catch (err) {
     next(err);
   }
-};
+}) as RequestHandler;
 
 // GET followed by user and packages (followedPackages)
 const getFollowedPackagesByUserAndPackage = (async (

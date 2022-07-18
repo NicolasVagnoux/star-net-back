@@ -108,8 +108,28 @@ const getAllPackages = (async (
   next: NextFunction
 ) => {
   try {
+    const packages = await Package.getAllPackages();
+     // react-admin
+     res.setHeader(
+      'Content-Range',
+      `users : 0-${packages.length}/${packages.length + 1}`
+    );
+
+    return res.status(200).json(packages);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
+// GET packages excluding user connected
+const getAllPackagesExcludingUser = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
     const { idUser } = req.params as IUser;
-    const packages = await Package.getAllPackages(Number(idUser));
+    const packages = await Package.getAllPackagesExcludingUserConnected(Number(idUser));
 
      // react-admin
      res.setHeader(
@@ -197,6 +217,7 @@ export default {
   packageIsNotFollowedByUser,
   isPackageFollowedByUser,
   getAllPackages,
+  getAllPackagesExcludingUser,
   getArticlesByPackage,
   getCategoriesByPackage,
   getCompletedArticlesByUserAndPackage,

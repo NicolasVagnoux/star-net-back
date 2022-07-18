@@ -183,11 +183,18 @@ const setupRoutes = (server: Express) => {
   );
 
   ///// PACKAGES /////
+  // GET all packages (excluding one user)
+  server.get(
+    '/api/packages',
+    // authController.getCurrentSession,
+    packagesController.getAllPackages
+  );
+
   // GET packages (excluding one user)
   server.get(
     '/api/users/:idUser/packages',
     // authController.getCurrentSession,
-    packagesController.getAllPackages
+    packagesController.getAllPackagesExcludingUser
   );
   // POST article by package
   server.post(
