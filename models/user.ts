@@ -5,7 +5,7 @@ import { ResultSetHeader } from 'mysql2';
 
 const getAllUsers = async (): Promise<IUser[]> => {
   const sql =
-    'SELECT id, firstName, lastName, phoneNumber, email, registrationDate, userPicture, idTheme, idLanguage, idRight FROM users';
+    'SELECT id, firstName, lastName, phoneNumber, email, registrationDate, userPicture, idTheme, idLanguage, isAdmin FROM users';
   const results = await connection.promise().query<IUser[]>(sql);
   return results[0];
 };
@@ -14,7 +14,7 @@ const getUserById = async (idUser: number): Promise<IUser> => {
   const [results] = await connection
     .promise()
     .query<IUser[]>(
-      'SELECT id, firstName, lastName, phoneNumber, email, registrationDate, userPicture, idTheme, idLanguage, idRight FROM users WHERE id = ?',
+      'SELECT id, firstName, lastName, phoneNumber, email, registrationDate, userPicture, idTheme, idLanguage, isAdmin FROM users WHERE id = ?',
       [idUser]
     );
   return results[0];
@@ -24,7 +24,7 @@ const getUserByEmail = async (email: string): Promise<IUser> => {
   const [results] = await connection
     .promise()
     .query<IUser[]>(
-      'SELECT id, firstName, lastName, phoneNumber, email, hashedPassword, registrationDate, userPicture, idTheme, idLanguage, idRight FROM users WHERE email = ?',
+      'SELECT id, firstName, lastName, phoneNumber, email, hashedPassword, registrationDate, userPicture, idTheme, idLanguage, isAdmin FROM users WHERE email = ?',
       [email]
     );
   return results[0];
@@ -93,9 +93,9 @@ const updateUser = async (idUser: number, user: IUser): Promise<boolean> => {
     sqlValues.push(user.idLanguage);
     oneValue = true;
   }
-  if (user.idRight) {
-    sql += oneValue ? ' , idRight = ? ' : ' idRight = ? ';
-    sqlValues.push(user.idRight);
+  if (user.isAdmin === 1 || user.isAdmin === 0 ) {
+    sql += oneValue ? ' , isAdmin = ? ' : ' isAdmin = ? ';
+    sqlValues.push(user.isAdmin);
     oneValue = true;
   }
   sql += ' WHERE id = ?';
