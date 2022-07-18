@@ -18,6 +18,8 @@ const validateArticle = (req: Request, res: Response, next: NextFunction) => {
     mainImage: Joi.string().max(255).presence(required),
     mainContent: Joi.string().presence(required),
     id: Joi.number().optional(),
+    creationDate: Joi.date().optional(),
+    lastUpdateDate: Joi.date().optional(),
   }).validate(req.body, { abortEarly: false }).error;
   if (errors) {
     next(new ErrorHandler(422, errors.message));
@@ -55,6 +57,13 @@ const getAllArticles = (async (
     const titleFilter = req.query.titleFilter as string;
     const tagFilter = req.query.tagFilter as string;
     const articles = await Article.getAllArticles(titleFilter, tagFilter);
+
+    // react-admin
+    res.setHeader(
+      'Content-Range',
+      `users : 0-${articles.length}/${articles.length + 1}`
+    );
+
     return res.status(200).json(articles);
   } catch (err) {
     next(err);
