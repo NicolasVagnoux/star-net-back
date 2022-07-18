@@ -110,6 +110,13 @@ const getAllPackages = (async (
   try {
     const { idUser } = req.params as IUser;
     const packages = await Package.getAllPackages(Number(idUser));
+
+     // react-admin
+     res.setHeader(
+      'Content-Range',
+      `users : 0-${packages.length}/${packages.length + 1}`
+    );
+
     return res.status(200).json(packages);
   } catch (err) {
     next(err);
