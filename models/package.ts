@@ -4,8 +4,15 @@ import IArticlePackage from '../interfaces/IArticlePackage';
 import IFollowedPackage from '../interfaces/IFollowedPackage';
 import { ResultSetHeader } from 'mysql2';
 
+// GET all packages
+const getAllPackages = async (): Promise<IPackage[]> => {
+  const sql = `SELECT * FROM packages`;
+  const results = await connection.promise().query<IPackage[]>(sql);
+  return results[0];
+};
+
 // GET packages (excluding followed packages by passing iduser in body)
-const getAllPackages = async (idUser: number): Promise<IPackage[]> => {
+const getAllPackagesExcludingUserConnected = async (idUser: number): Promise<IPackage[]> => {
   const sql = `SELECT * FROM packages WHERE id NOT IN (SELECT idPackage from followedpackages WHERE idUser = ?)`;
   const results = await connection.promise().query<IPackage[]>(sql, [idUser]);
   return results[0];
@@ -98,6 +105,7 @@ const deleteAllFollowedPackages = async (idUser: number): Promise<boolean> => {
 
 export default {
   getAllPackages,
+  getAllPackagesExcludingUserConnected,
   getPackageById,
   getPackagesByUserId,
   getFollowedPackageByUser,
