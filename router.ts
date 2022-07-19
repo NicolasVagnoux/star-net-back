@@ -190,12 +190,27 @@ const setupRoutes = (server: Express) => {
     packagesController.getAllPackages
   );
 
+  // GET all packages by ID
+  server.get(
+    '/api/packages/:idPackage',
+    // authController.getCurrentSession,
+    packagesController.getPackageById
+  );
+
   // GET packages (excluding one user)
   server.get(
     '/api/users/:idUser/packages',
     // authController.getCurrentSession,
     packagesController.getAllPackagesExcludingUser
   );
+
+  // Post one package
+  server.post(
+    '/api/packages/',
+    // authController.getCurrentSession,
+    packagesController.addOnePackage
+  );
+
   // POST article by package
   server.post(
     '/api/packages/:idPackage/articles',
@@ -203,6 +218,20 @@ const setupRoutes = (server: Express) => {
     packagesController.articlePackageExists,
     packagesController.addArticleByPackage
   );
+
+     // Put one package
+     server.put(
+      '/api/packages/:idPackage',
+      // authController.getCurrentSession,
+      packagesController.updateOnePackage
+    );
+  
+    // Delete one package
+    server.delete(
+      '/api/packages/:idPackage',
+      // authController.getCurrentSession,
+      packagesController.deleteOnePackage
+    );
 
   ///// FOLLOWED PACKAGES /////
   // GET followedpackages by User (followedPackages)
