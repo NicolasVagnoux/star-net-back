@@ -164,7 +164,8 @@ const getCompletedArticlesByUser = (async (
   try {
     const { idUser } = req.params;
     const completedArticle = await Article.getCompletedArticlesByUser(
-      Number(idUser)    );
+      Number(idUser)
+    );
     return res.status(200).json(completedArticle);
   } catch (err) {
     next(err);
@@ -295,7 +296,27 @@ const deleteFollowedPackagesByUser = async (
 const getComment = (async (req: Request, res: Response, next: NextFunction) => {
   try {
     const comments = await Comment.getAllComments();
+    // react-admin
+    res.setHeader(
+      'Content-Range',
+      `users : 0-${comments.length}/${comments.length + 1}`
+    );
     return res.status(200).json(comments);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
+//GET comment by id
+const getCommentById = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idComment } = req.params;
+    const comment = await Comment.getCommentById(Number(idComment));
+    comment ? res.status(200).json(comment) : res.sendStatus(404);
   } catch (err) {
     next(err);
   }
@@ -334,6 +355,26 @@ const updateComment = (async (
       res.status(200).send(comment);
     } else {
       throw new ErrorHandler(500, 'Comment cannot be updated');
+    }
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
+// DELETE faq
+const deleteComment = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idComment } = req.params;
+    const comment = await Comment.getCommentById(Number(idComment));
+    const commentDeleted = await Comment.deleteComment(Number(idComment)); //faqDelected => boolean
+    if (commentDeleted) {
+      res.status(200).send(comment); //needed by react-admin
+    } else {
+      throw new ErrorHandler(500, 'Comment cannot be deleted');
     }
   } catch (err) {
     next(err);
@@ -491,4 +532,6 @@ export default {
   deleteCompletedArticles,
   deleteFollowedPackages,
   deleteAllFollowedPackages,
+  getCommentById,
+  deleteComment,
 };
