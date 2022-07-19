@@ -190,6 +190,13 @@ const setupRoutes = (server: Express) => {
     packagesController.getAllPackages
   );
 
+   // GET all packages by ID
+   server.get(
+    '/api/packages/:idPackage',
+    // authController.getCurrentSession,
+    packagesController.getPackageById
+  );
+
   // GET packages (excluding one user)
   server.get(
     '/api/users/:idUser/packages',

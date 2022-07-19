@@ -41,7 +41,8 @@ const packageIsNotFollowedByUser = (async (
       Number(idPackage)
     );
     const condition = [packageIsFollowed].filter(
-      (packagefollowed: { id: number }) => packagefollowed?.id === Number(idPackage)
+      (packagefollowed: { id: number }) =>
+        packagefollowed?.id === Number(idPackage)
     ).length;
     if (condition > 0) {
       next(new ErrorHandler(404, 'This package is already followed'));
@@ -66,7 +67,8 @@ const isPackageFollowedByUser = (async (
       Number(idPackage)
     );
     const condition = [packageIsFollowed].filter(
-      (packagefollowed: { id: number; }) => packagefollowed?.id === Number(idPackage)
+      (packagefollowed: { id: number }) =>
+        packagefollowed?.id === Number(idPackage)
     ).length;
     if (condition !== 1) {
       next(new ErrorHandler(404, 'This package is not followed by user'));
@@ -109,12 +111,27 @@ const getAllPackages = (async (
 ) => {
   try {
     const packages = await Package.getAllPackages();
-     // react-admin
-     res.setHeader(
+    // react-admin
+    res.setHeader(
       'Content-Range',
       `users : 0-${packages.length}/${packages.length + 1}`
     );
 
+    return res.status(200).json(packages);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
+// GET packages by ID
+const getPackageById = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idPackage } = req.params as IPackage;
+    const packages = await Package.getPackageById(Number(idPackage));
     return res.status(200).json(packages);
   } catch (err) {
     next(err);
@@ -129,10 +146,12 @@ const getAllPackagesExcludingUser = (async (
 ) => {
   try {
     const { idUser } = req.params as IUser;
-    const packages = await Package.getAllPackagesExcludingUserConnected(Number(idUser));
+    const packages = await Package.getAllPackagesExcludingUserConnected(
+      Number(idUser)
+    );
 
-     // react-admin
-     res.setHeader(
+    // react-admin
+    res.setHeader(
       'Content-Range',
       `users : 0-${packages.length}/${packages.length + 1}`
     );
@@ -217,6 +236,7 @@ export default {
   packageIsNotFollowedByUser,
   isPackageFollowedByUser,
   getAllPackages,
+  getPackageById,
   getAllPackagesExcludingUser,
   getArticlesByPackage,
   getCategoriesByPackage,
