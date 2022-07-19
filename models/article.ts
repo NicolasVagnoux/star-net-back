@@ -55,7 +55,7 @@ const getArticlesByPackage = async (idPackage: number): Promise<IArticle[]> => {
   const results = await connection
     .promise()
     .query<IArticle[]>(
-      'SELECT a.id, a.title, a.idUser, a.mainImage, a.mainContent, a.creationDate, a.lastUpdateDate FROM articles a INNER JOIN articlesPackages ON a.id = articlesPackages.idArticle WHERE articlesPackages.idPackage = ?',
+      'SELECT a.id, a.title, a.idUser, a.mainImage, a.mainContent, creationDate, lastUpdateDate FROM articles a INNER JOIN articlesPackages ON a.id = articlesPackages.idArticle WHERE articlesPackages.idPackage = ?',
       [idPackage]
     );
   return results[0];
@@ -77,7 +77,7 @@ const getCompletedArticlesByUserAndArticle = async (
 
 // GET completedArticle by user
 const getCompletedArticlesByUser = async (
-  idUser: number,
+  idUser: number
 ): Promise<ICompletedArticle[]> => {
   const results = await connection
     .promise()
