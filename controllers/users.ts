@@ -11,6 +11,7 @@ import IBookmark from '../interfaces/IBookmark';
 import IComment from '../interfaces/IComment';
 import ICompletedArticle from '../interfaces/ICompletedArticle';
 import IFollowedPackage from '../interfaces/IFollowedPackage';
+import bookmark from '../models/bookmark';
 
 // [MIDDLEWARE] Check if user exists
 const userExists = (async (req: Request, res: Response, next: NextFunction) => {
@@ -80,13 +81,11 @@ const getAllUsers = (async (
 ) => {
   try {
     const users = await User.getAllUsers();
-
-    // react-admin
+    // react admin
     res.setHeader(
       'Content-Range',
       `users : 0-${users.length}/${users.length + 1}`
     );
-
     return res.status(200).json(users);
   } catch (err) {
     next(err);
@@ -120,7 +119,7 @@ const getArticlesByUser = async (
 };
 
 //GET bookmark by user and article
-const getBookmarkByUserAndArticle = async (
+const getBookmarkByUserAndArticle = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -135,7 +134,22 @@ const getBookmarkByUserAndArticle = async (
   } catch (err) {
     next(err);
   }
-};
+}) as RequestHandler;
+
+// GET all bookmarks by user
+const getBookmarksByUser = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const bookmarks = await bookmark.getAllBookmarksByUser(Number(idUser));
+    return res.status(200).json(bookmarks);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
 
 //GET completed by user and article
 const getCompletedArticlesByUserAndArticle = async (
@@ -217,7 +231,7 @@ const addUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 //POST bookmark by user
-const addBookmarkByUser = async (
+const addBookmarkByUser = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -231,10 +245,10 @@ const addBookmarkByUser = async (
   } catch (err) {
     next(err);
   }
-};
+}) as RequestHandler;
 
 // POST completed articles by user and package
-const addCompletedArticleByUser = async (
+const addCompletedArticleByUser = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -251,7 +265,7 @@ const addCompletedArticleByUser = async (
   } catch (err) {
     next(err);
   }
-};
+}) as RequestHandler;
 
 // POST followed packages by user
 const addFollowedPackagesByUser = async (
@@ -445,8 +459,9 @@ const deleteAllBookmarksByUser = (async (
     const allBookmarksDeleted = await Bookmark.deleteAllBookmarks(
       Number(idUser)
     );
+
     // boolean
-    allBookmarksDeleted ? res.sendStatus(204) : res.sendStatus(500);
+    allBookmarksDeleted ? next() : res.sendStatus(500);
   } catch (err) {
     next(err);
   }
@@ -463,7 +478,8 @@ const deleteCompletedArticles = (async (
     const completedArticlesDeleted = await Article.deleteCompletedArticles(
       Number(idUser)
     );
-    completedArticlesDeleted ? res.sendStatus(204) : res.sendStatus(500);
+
+    completedArticlesDeleted ? next() : res.sendStatus(500);
   } catch (err) {
     next(err);
   }
@@ -499,7 +515,8 @@ const deleteAllFollowedPackages = (async (
     const allFollowedPackagesDeleted = await Package.deleteAllFollowedPackages(
       Number(idUser)
     );
-    allFollowedPackagesDeleted ? res.sendStatus(204) : res.sendStatus(500);
+
+    allFollowedPackagesDeleted ? next() : res.sendStatus(500);
   } catch (err) {
     next(err);
   }
@@ -513,6 +530,7 @@ export default {
   getUserById,
   getArticlesByUser,
   getBookmarkByUserAndArticle,
+  getBookmarksByUser,
   deleteAllBookmarksByUser,
   getCompletedArticlesByUserAndArticle,
   getCompletedArticlesByUser,
