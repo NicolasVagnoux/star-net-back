@@ -230,6 +230,64 @@ const addArticleByPackage = async (
   }
 };
 
+// POST one package
+const addOnePackage = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const packageItem = req.body as IPackage;
+    packageItem.id = await Package.addPackage(packageItem);
+    res.status(201).json(packageItem);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
+// Put one package
+const updateOnePackage = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idPackage } = req.params;
+    const packageUpdated = await Package.updateOnePackage(
+      Number(idPackage),
+      req.body as IPackage
+    ); 
+    if (packageUpdated) {
+      const packageItem = await Article.getArticleById(Number(idPackage));
+      res.status(200).send(packageItem); // react-admin needs this response
+    } else {
+      throw new ErrorHandler(500, 'Package cannot be updated');
+    }
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
+//DELETE package
+const deleteOnePackage = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idPackage } = req.params;
+    const packageItem = await Package.getPackageById(Number(idPackage));
+    const packageDeleted = await Package.deletePackage(Number(idPackage)); //articleDelected => boolean
+    if (packageDeleted) {
+      res.status(200).send(packageItem); //needed by react-admin
+    } else {
+      throw new ErrorHandler(500, 'Package cannot be deleted');
+    }
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
 export default {
   packageExists,
   articlePackageExists,
@@ -242,4 +300,7 @@ export default {
   getCategoriesByPackage,
   getCompletedArticlesByUserAndPackage,
   addArticleByPackage,
+  addOnePackage,
+  updateOnePackage,
+  deleteOnePackage,
 };

@@ -12,7 +12,9 @@ const getAllPackages = async (): Promise<IPackage[]> => {
 };
 
 // GET packages (excluding followed packages by passing iduser in body)
-const getAllPackagesExcludingUserConnected = async (idUser: number): Promise<IPackage[]> => {
+const getAllPackagesExcludingUserConnected = async (
+  idUser: number
+): Promise<IPackage[]> => {
   const sql = `SELECT * FROM packages WHERE id NOT IN (SELECT idPackage from followedpackages WHERE idUser = ?)`;
   const results = await connection.promise().query<IPackage[]>(sql, [idUser]);
   return results[0];
@@ -65,6 +67,44 @@ const getArticlePackageByIds = async (
   return results[0];
 };
 
+// POST one package
+const addPackage = async (packageItem: IPackage): Promise<number> => {
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>(
+      'INSERT INTO packages (name, description) VALUES (?, ?)',
+      [packageItem.name, packageItem.description]
+    );
+  return results[0].insertId;
+};
+
+//PUT article
+const updateOnePackage = async (
+  idPackage: number,
+  packageItem: IPackage
+): Promise<boolean> => {
+  let sql = 'UPDATE packages SET ';
+  const sqlValues: Array<string | number> = [];
+  let oneValue = false;
+  if (packageItem.title) {
+    sql += 'name = ?';
+    sqlValues.push(packageItem.name);
+    oneValue = true;
+  }
+  if (packageItem.description) {
+    sql += oneValue ? ' , description = ? ' : ' description = ? ';
+    sqlValues.push(packageItem.description);
+    oneValue = true;
+  }
+  sql += ' WHERE id = ?';
+  sqlValues.push(idPackage);
+
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>(sql, sqlValues);
+  return results[0].affectedRows === 1;
+};
+
 // POST followed package by user and package
 const addFollowedPackagesByUser = async (
   idUser: number,
@@ -77,6 +117,14 @@ const addFollowedPackagesByUser = async (
       [idUser, followedPackage.idPackage]
     );
   return results[0].insertId;
+};
+
+//DELETE package
+const deletePackage = async (idPackage: number): Promise<boolean> => {
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>('DELETE FROM packages WHERE id = ?', [idPackage]);
+  return results[0].affectedRows === 1;
 };
 
 // DELETE followed package by user and package
@@ -111,6 +159,9 @@ export default {
   getFollowedPackageByUser,
   getArticlePackageByIds,
   addFollowedPackagesByUser,
+  addPackage,
+  updateOnePackage,
+  deletePackage,
   deleteFollowedPackageByUserAndPackage,
   deleteAllFollowedPackages,
 };

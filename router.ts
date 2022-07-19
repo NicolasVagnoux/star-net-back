@@ -108,7 +108,7 @@ const setupRoutes = (server: Express) => {
     usersController.getCompletedArticlesByUserAndArticle
   );
 
-  //GET completedArticles by user 
+  //GET completedArticles by user
   server.get(
     '/api/users/:idUser/completedArticles/',
     // authController.getCurrentSession,
@@ -190,8 +190,8 @@ const setupRoutes = (server: Express) => {
     packagesController.getAllPackages
   );
 
-   // GET all packages by ID
-   server.get(
+  // GET all packages by ID
+  server.get(
     '/api/packages/:idPackage',
     // authController.getCurrentSession,
     packagesController.getPackageById
@@ -203,6 +203,14 @@ const setupRoutes = (server: Express) => {
     // authController.getCurrentSession,
     packagesController.getAllPackagesExcludingUser
   );
+
+  // Post one package
+  server.post(
+    '/api/packages/:idPackage',
+    // authController.getCurrentSession,
+    packagesController.addOnePackage
+  );
+
   // POST article by package
   server.post(
     '/api/packages/:idPackage/articles',
@@ -210,6 +218,20 @@ const setupRoutes = (server: Express) => {
     packagesController.articlePackageExists,
     packagesController.addArticleByPackage
   );
+
+     // Put one package
+     server.put(
+      '/api/packages/:idPackage',
+      // authController.getCurrentSession,
+      packagesController.updateOnePackage
+    );
+  
+    // Delete one package
+    server.delete(
+      '/api/packages/:idPackage',
+      // authController.getCurrentSession,
+      packagesController.deleteOnePackage
+    );
 
   ///// FOLLOWED PACKAGES /////
   // GET followedpackages by User (followedPackages)
@@ -248,7 +270,10 @@ const setupRoutes = (server: Express) => {
   // GET all categories
   server.get('/api/categories', categoriesController.getAllCategories);
   // GET category by id
-  server.get('/api/categories/:idCategory', categoriesController.getOneCategory);
+  server.get(
+    '/api/categories/:idCategory',
+    categoriesController.getOneCategory
+  );
   // GET categories by package
   server.get(
     '/api/packages/:idPackage/categories',
@@ -262,9 +287,15 @@ const setupRoutes = (server: Express) => {
   // POST category
   server.post('/api/categories', categoriesController.addCategory);
   // PUT faq
-  server.put('/api/categories/:idCategory', categoriesController.updateCategory);
+  server.put(
+    '/api/categories/:idCategory',
+    categoriesController.updateCategory
+  );
   // DELETE faq
-  server.delete('/api/categories/:idCategory', categoriesController.deleteCategory);
+  server.delete(
+    '/api/categories/:idCategory',
+    categoriesController.deleteCategory
+  );
 
   ///// CONTACT FORM /////
   server.post('/api/contact', contactController.sendMail);
