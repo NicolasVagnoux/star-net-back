@@ -206,7 +206,7 @@ const setupRoutes = (server: Express) => {
 
   // Post one package
   server.post(
-    '/api/packages/:idPackage',
+    '/api/packages/',
     // authController.getCurrentSession,
     packagesController.addOnePackage
   );

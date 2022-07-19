@@ -258,7 +258,7 @@ const updateOnePackage = (async (
       req.body as IPackage
     ); 
     if (packageUpdated) {
-      const packageItem = await Article.getArticleById(Number(idPackage));
+      const packageItem = await Package.getPackageById(Number(idPackage));
       res.status(200).send(packageItem); // react-admin needs this response
     } else {
       throw new ErrorHandler(500, 'Package cannot be updated');

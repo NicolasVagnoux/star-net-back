@@ -86,7 +86,7 @@ const updateOnePackage = async (
   let sql = 'UPDATE packages SET ';
   const sqlValues: Array<string | number> = [];
   let oneValue = false;
-  if (packageItem.title) {
+  if (packageItem.name) {
     sql += 'name = ?';
     sqlValues.push(packageItem.name);
     oneValue = true;
