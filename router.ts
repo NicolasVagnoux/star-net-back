@@ -77,7 +77,7 @@ const setupRoutes = (server: Express) => {
   // GET article by id
   server.get(
     '/api/articles/:idArticle',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     articlesController.getOneArticle
   );
   // GET articles by user (bookmarks)
@@ -183,11 +183,18 @@ const setupRoutes = (server: Express) => {
   );
 
   ///// PACKAGES /////
+  // GET all packages (excluding one user)
+  server.get(
+    '/api/packages',
+    // authController.getCurrentSession,
+    packagesController.getAllPackages
+  );
+
   // GET packages (excluding one user)
   server.get(
     '/api/users/:idUser/packages',
     // authController.getCurrentSession,
-    packagesController.getAllPackages
+    packagesController.getAllPackagesExcludingUser
   );
   // POST article by package
   server.post(
@@ -233,6 +240,8 @@ const setupRoutes = (server: Express) => {
   ///// CATEGORIES /////
   // GET all categories
   server.get('/api/categories', categoriesController.getAllCategories);
+  // GET category by id
+  server.get('/api/categories/:idCategory', categoriesController.getOneCategory);
   // GET categories by package
   server.get(
     '/api/packages/:idPackage/categories',
@@ -243,6 +252,12 @@ const setupRoutes = (server: Express) => {
     '/api/articles/:idArticle/categories',
     articlesController.getCategoriesByArticle
   );
+  // POST category
+  server.post('/api/categories', categoriesController.addCategory);
+  // PUT faq
+  server.put('/api/categories/:idCategory', categoriesController.updateCategory);
+  // DELETE faq
+  server.delete('/api/categories/:idCategory', categoriesController.deleteCategory);
 
   ///// CONTACT FORM /////
   server.post('/api/contact', contactController.sendMail);
