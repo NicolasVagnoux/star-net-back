@@ -77,7 +77,7 @@ const getCompletedArticlesByUserAndArticle = async (
 
 // GET completedArticle by user
 const getCompletedArticlesByUser = async (
-  idUser: number,
+  idUser: number
 ): Promise<ICompletedArticle[]> => {
   const results = await connection
     .promise()

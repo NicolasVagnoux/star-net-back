@@ -16,6 +16,14 @@ const getBookmarkByUserAndArticle = async (
   return results[0];
 };
 
+// GET all bookmarks by user
+const getAllBookmarksByUser = async (idUser: number): Promise<IBookmark[]> => {
+  const [results] = await connection
+    .promise()
+    .query<IBookmark[]>('SELECT * FROM bookmarks WHERE idUser = ?', [idUser]);
+  return results;
+};
+
 // POST bookmark
 const addBookmark = async (
   idUser: number,
@@ -54,6 +62,7 @@ const deleteAllBookmarks = async (idUser: number): Promise<boolean> => {
 
 export default {
   getBookmarkByUserAndArticle,
+  getAllBookmarksByUser,
   addBookmark,
   deleteBookmark,
   deleteAllBookmarks,

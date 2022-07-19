@@ -36,6 +36,9 @@ const setupRoutes = (server: Express) => {
   server.delete(
     '/api/users/:idUser',
     usersController.userExists,
+    usersController.deleteAllBookmarksByUser,
+    usersController.deleteCompletedArticles,
+    usersController.deleteAllFollowedPackages,
     usersController.deleteUser
   );
 
@@ -43,10 +46,10 @@ const setupRoutes = (server: Express) => {
   // POST bookmark by user
   server.post(
     '/api/users/:idUser/bookmarks',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     usersController.addBookmarkByUser
   );
-  // DELETE bookmark by user
+  // DELETE bookmark by user and article
   server.delete(
     '/api/users/:idUser/bookmarks/:idArticle',
     authController.getCurrentSession,
@@ -61,8 +64,14 @@ const setupRoutes = (server: Express) => {
   // GET bookmark by user and article
   server.get(
     '/api/users/:idUser/bookmarks/:idArticle',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     usersController.getBookmarkByUserAndArticle
+  );
+
+  // GET bookmarks by user
+  server.get(
+    '/api/users/:idUser/bookmarks',
+    usersController.getBookmarksByUser
   );
 
   ///// LOGIN /////
@@ -84,7 +93,7 @@ const setupRoutes = (server: Express) => {
   server.get(
     '/api/users/:idUser/articles',
     usersController.userExists,
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     usersController.getArticlesByUser
   );
   //GET articles by package (articlesPackages)
@@ -108,7 +117,7 @@ const setupRoutes = (server: Express) => {
     usersController.getCompletedArticlesByUserAndArticle
   );
 
-  //GET completedArticles by user 
+  //GET completedArticles by user
   server.get(
     '/api/users/:idUser/completedArticles/',
     // authController.getCurrentSession,
@@ -166,15 +175,10 @@ const setupRoutes = (server: Express) => {
   // POST completed article by user
   server.post(
     '/api/users/:idUser/completedArticles',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     usersController.addCompletedArticleByUser
   );
-  // POST completed article by user
-  server.post(
-    '/api/users/:idUser/completedArticles',
-    authController.getCurrentSession,
-    usersController.addCompletedArticleByUser
-  );
+
   // DELETE completedArticles by user
   server.delete(
     '/api/users/:idUser/completedArticles',
