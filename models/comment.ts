@@ -20,6 +20,14 @@ const getAllComments = async (): Promise<IComment[]> => {
   return results[0];
 };
 
+//GET comment by id
+const getCommentById = async (idComment: number): Promise<IComment> => {
+  const [results] = await connection
+    .promise()
+    .query<IComment[]>('SELECT * FROM comments WHERE id = ?', [idComment]);
+  return results[0];
+};
+
 // GET comment by user
 const getCommentByUser = async (): Promise<IComment[]> => {
   const sql = 'SELECT * FROM comments WHERE idUser=?';
@@ -49,6 +57,13 @@ const updateCommentByUser = async (idUser: number): Promise<boolean> => {
     .query<ResultSetHeader>(sql, [idUser]);
   return results[0].affectedRows > 0;
 };
+// DELETE faq
+const deleteComment = async (idComment: number): Promise<boolean> => {
+  const results = await connection
+    .promise()
+    .query<ResultSetHeader>('DELETE FROM comments WHERE id = ?', [idComment]);
+  return results[0].affectedRows === 1;
+};
 
 export default {
   addComment,
@@ -56,4 +71,6 @@ export default {
   getCommentByUser,
   getAllComments,
   updateCommentByUser,
+  getCommentById,
+  deleteComment,
 };

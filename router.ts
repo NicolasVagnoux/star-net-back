@@ -108,7 +108,7 @@ const setupRoutes = (server: Express) => {
     usersController.getCompletedArticlesByUserAndArticle
   );
 
-  //GET completedArticles by user 
+  //GET completedArticles by user
   server.get(
     '/api/users/:idUser/completedArticles/',
     // authController.getCurrentSession,
@@ -241,7 +241,10 @@ const setupRoutes = (server: Express) => {
   // GET all categories
   server.get('/api/categories', categoriesController.getAllCategories);
   // GET category by id
-  server.get('/api/categories/:idCategory', categoriesController.getOneCategory);
+  server.get(
+    '/api/categories/:idCategory',
+    categoriesController.getOneCategory
+  );
   // GET categories by package
   server.get(
     '/api/packages/:idPackage/categories',
@@ -254,10 +257,23 @@ const setupRoutes = (server: Express) => {
   );
   // POST category
   server.post('/api/categories', categoriesController.addCategory);
+
+  // PUT faq
+  server.put(
+    '/api/categories/:idCategory',
+    categoriesController.updateCategory
+  );
+  // DELETE faq
+  server.delete(
+    '/api/categories/:idCategory',
+    categoriesController.deleteCategory
+  );
+
   // PUT category
   server.put('/api/categories/:idCategory', categoriesController.updateCategory);
   // DELETE category
   server.delete('/api/categories/:idCategory', categoriesController.deleteCategory);
+
 
   ///// CONTACT FORM /////
   server.post('/api/contact', contactController.sendMail);
@@ -290,6 +306,9 @@ const setupRoutes = (server: Express) => {
   // GET all comments
   server.get('/api/comments', usersController.getComment);
 
+  //GET one comment
+  server.get('/api/comments/:idComment', usersController.getCommentById);
+
   // POST comments by user
   server.post('/api/users/:idUser/comments', usersController.addCommentByUser);
 
@@ -298,6 +317,9 @@ const setupRoutes = (server: Express) => {
     '/api/users/:idUser/comments/:idComment',
     usersController.updateComment
   );
+
+  //DELETE comment
+  server.delete('/api/comments/:idComment', usersController.deleteComment);
 };
 
 export default setupRoutes;
