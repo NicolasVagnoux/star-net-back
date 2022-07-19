@@ -7,6 +7,7 @@ import categoriesController from './controllers/categories';
 import contactController from './helpers/contact';
 import faqController from './controllers/faqs';
 import guideController from './controllers/guides';
+import articlescategoriesController from './controllers/articlesCategories';
 
 const setupRoutes = (server: Express) => {
   ///// USERS /////
@@ -298,6 +299,18 @@ const setupRoutes = (server: Express) => {
     '/api/users/:idUser/comments/:idComment',
     usersController.updateComment
   );
+
+    ///// ARTICLES CATEGORIES (ONLY FOR REACT ADMIN !) /////
+  // GET all ArtCat
+  server.get('/api/articlescategories', articlescategoriesController.getAllArtCat);
+  // GET ArtCat by id
+  server.get('/api/articlescategories/:idArtCat', articlescategoriesController.getOneArtCat);
+  // POST ArtCat
+  server.post('/api/articlescategories', articlescategoriesController.addArtCat);
+  // PUT ArtCat
+  server.put('/api/articlescategories/:idArtCat', articlescategoriesController.updateArtCat);
+  // DELETE ArtCat
+  server.delete('/api/articlescategories/:idArtCat', articlescategoriesController.deleteArtCat);
 };
 
 export default setupRoutes;
