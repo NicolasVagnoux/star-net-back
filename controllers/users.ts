@@ -419,9 +419,9 @@ const deleteAllBookmarksByUser = (async (
     const allBookmarksDeleted = await Bookmark.deleteAllBookmarks(
       Number(idUser)
     );
-    next();
+
     // boolean
-    allBookmarksDeleted ? res.sendStatus(204) : res.sendStatus(500);
+    allBookmarksDeleted ? next() : res.sendStatus(500);
   } catch (err) {
     next(err);
   }
@@ -438,8 +438,8 @@ const deleteCompletedArticles = (async (
     const completedArticlesDeleted = await Article.deleteCompletedArticles(
       Number(idUser)
     );
-    next();
-    completedArticlesDeleted ? res.sendStatus(204) : res.sendStatus(500);
+
+    completedArticlesDeleted ? next() : res.sendStatus(500);
   } catch (err) {
     next(err);
   }
@@ -475,8 +475,8 @@ const deleteAllFollowedPackages = (async (
     const allFollowedPackagesDeleted = await Package.deleteAllFollowedPackages(
       Number(idUser)
     );
-    next();
-    allFollowedPackagesDeleted ? res.sendStatus(204) : res.sendStatus(500);
+
+    allFollowedPackagesDeleted ? next() : res.sendStatus(500);
   } catch (err) {
     next(err);
   }
