@@ -36,7 +36,7 @@ const validateUser = (req: Request, res: Response, next: NextFunction) => {
   const errors = Joi.object({
     firstName: Joi.string().max(80).presence(required),
     lastName: Joi.string().max(80).presence(required),
-    phoneNumber: Joi.string().max(40).optional(),
+    phoneNumber: [Joi.string().max(40).optional(), Joi.allow(null)],
     email: Joi.string().email().max(150).presence(required),
     userPicture: [Joi.string().max(500).optional(), Joi.allow(null)],
     password: Joi.string().min(6).max(50).presence(required),
