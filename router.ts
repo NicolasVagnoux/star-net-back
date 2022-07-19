@@ -7,6 +7,7 @@ import categoriesController from './controllers/categories';
 import contactController from './helpers/contact';
 import faqController from './controllers/faqs';
 import guideController from './controllers/guides';
+import articlescategoriesController from './controllers/articlesCategories';
 
 const setupRoutes = (server: Express) => {
   ///// USERS /////
@@ -190,12 +191,27 @@ const setupRoutes = (server: Express) => {
     packagesController.getAllPackages
   );
 
+  // GET all packages by ID
+  server.get(
+    '/api/packages/:idPackage',
+    // authController.getCurrentSession,
+    packagesController.getPackageById
+  );
+
   // GET packages (excluding one user)
   server.get(
     '/api/users/:idUser/packages',
     // authController.getCurrentSession,
     packagesController.getAllPackagesExcludingUser
   );
+
+  // Post one package
+  server.post(
+    '/api/packages/',
+    // authController.getCurrentSession,
+    packagesController.addOnePackage
+  );
+
   // POST article by package
   server.post(
     '/api/packages/:idPackage/articles',
@@ -203,6 +219,20 @@ const setupRoutes = (server: Express) => {
     packagesController.articlePackageExists,
     packagesController.addArticleByPackage
   );
+
+     // Put one package
+     server.put(
+      '/api/packages/:idPackage',
+      // authController.getCurrentSession,
+      packagesController.updateOnePackage
+    );
+  
+    // Delete one package
+    server.delete(
+      '/api/packages/:idPackage',
+      // authController.getCurrentSession,
+      packagesController.deleteOnePackage
+    );
 
   ///// FOLLOWED PACKAGES /////
   // GET followedpackages by User (followedPackages)
@@ -317,9 +347,21 @@ const setupRoutes = (server: Express) => {
     '/api/users/:idUser/comments/:idComment',
     usersController.updateComment
   );
-
+  
   //DELETE comment
   server.delete('/api/comments/:idComment', usersController.deleteComment);
+
+  ///// ARTICLES CATEGORIES (ONLY FOR REACT ADMIN !) /////
+  // GET all ArtCat
+  server.get('/api/articlescategories', articlescategoriesController.getAllArtCat);
+  // GET ArtCat by id
+  server.get('/api/articlescategories/:idArtCat', articlescategoriesController.getOneArtCat);
+  // POST ArtCat
+  server.post('/api/articlescategories', articlescategoriesController.addArtCat);
+  // PUT ArtCat
+  server.put('/api/articlescategories/:idArtCat', articlescategoriesController.updateArtCat);
+  // DELETE ArtCat
+  server.delete('/api/articlescategories/:idArtCat', articlescategoriesController.deleteArtCat);
 };
 
 export default setupRoutes;
