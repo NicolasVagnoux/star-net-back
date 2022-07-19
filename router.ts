@@ -254,9 +254,9 @@ const setupRoutes = (server: Express) => {
   );
   // POST category
   server.post('/api/categories', categoriesController.addCategory);
-  // PUT faq
+  // PUT category
   server.put('/api/categories/:idCategory', categoriesController.updateCategory);
-  // DELETE faq
+  // DELETE category
   server.delete('/api/categories/:idCategory', categoriesController.deleteCategory);
 
   ///// CONTACT FORM /////

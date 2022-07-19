@@ -7,6 +7,13 @@ import IFaq from '../interfaces/IFaq';
 const getAllFaqs = (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const faqs = await Faq.getAllFaqs();
+
+      // react-admin
+    res.setHeader(
+      'Content-Range',
+      `faqs : 0-${faqs.length}/${faqs.length + 1}`
+    );
+
       return res.status(200).json(faqs);
     } catch (err) {
       next(err);
