@@ -8,6 +8,7 @@ import contactController from './helpers/contact';
 import faqController from './controllers/faqs';
 import guideController from './controllers/guides';
 import articlescategoriesController from './controllers/articlesCategories';
+import articlespackagesController from './controllers/articlesPackages';
 
 const setupRoutes = (server: Express) => {
   ///// USERS /////
@@ -362,6 +363,18 @@ const setupRoutes = (server: Express) => {
   server.put('/api/articlescategories/:idArtCat', articlescategoriesController.updateArtCat);
   // DELETE ArtCat
   server.delete('/api/articlescategories/:idArtCat', articlescategoriesController.deleteArtCat);
+
+  ///// ARTICLES PACKAGES (ONLY FOR REACT ADMIN !) /////
+  // GET all ArtPack
+  server.get('/api/articlespackages', articlespackagesController.getAllArtPack);
+  // GET ArtCat by id
+  server.get('/api/articlespackages/:idArtPack', articlespackagesController.getOneArtPack);
+  // POST ArtCat
+  server.post('/api/articlespackages', articlespackagesController.addArtPack);
+  // PUT ArtCat
+  server.put('/api/articlespackages/:idArtPack', articlespackagesController.updateArtPack);
+  // DELETE ArtCat
+  server.delete('/api/articlespackages/:idArtPack', articlespackagesController.deleteArtPack);
 };
 
 export default setupRoutes;
