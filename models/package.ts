@@ -148,7 +148,7 @@ const deleteAllFollowedPackages = async (idUser: number): Promise<boolean> => {
     .query<ResultSetHeader>('DELETE FROM followedpackages WHERE idUser = ?', [
       idUser,
     ]);
-  return results[0].affectedRows > 0;
+  return results[0].affectedRows >= 0;
 };
 
 export default {
