@@ -7,6 +7,13 @@ import IGuide from '../interfaces/IGuide';
 const getAllGuides = (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const guides = await Guide.getAllGuides();
+
+      // react-admin
+      res.setHeader(
+      'Content-Range',
+      `guides : 0-${guides.length}/${guides.length + 1}`
+      );
+
       return res.status(200).json(guides);
     } catch (err) {
       next(err);
