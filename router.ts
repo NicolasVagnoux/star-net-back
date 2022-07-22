@@ -8,6 +8,7 @@ import contactController from './helpers/contact';
 import faqController from './controllers/faqs';
 import guideController from './controllers/guides';
 import articlescategoriesController from './controllers/articlesCategories';
+import packagescategoriesController from './controllers/packagesCategories';
 
 const setupRoutes = (server: Express) => {
   ///// USERS /////
@@ -37,6 +38,9 @@ const setupRoutes = (server: Express) => {
   server.delete(
     '/api/users/:idUser',
     usersController.userExists,
+    usersController.deleteAllBookmarksByUser,
+    usersController.deleteCompletedArticles,
+    usersController.deleteAllFollowedPackages,
     usersController.deleteUser
   );
 
@@ -44,10 +48,10 @@ const setupRoutes = (server: Express) => {
   // POST bookmark by user
   server.post(
     '/api/users/:idUser/bookmarks',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     usersController.addBookmarkByUser
   );
-  // DELETE bookmark by user
+  // DELETE bookmark by user and article
   server.delete(
     '/api/users/:idUser/bookmarks/:idArticle',
     authController.getCurrentSession,
@@ -62,8 +66,14 @@ const setupRoutes = (server: Express) => {
   // GET bookmark by user and article
   server.get(
     '/api/users/:idUser/bookmarks/:idArticle',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     usersController.getBookmarkByUserAndArticle
+  );
+
+  // GET bookmarks by user
+  server.get(
+    '/api/users/:idUser/bookmarks',
+    usersController.getBookmarksByUser
   );
 
   ///// LOGIN /////
@@ -85,7 +95,7 @@ const setupRoutes = (server: Express) => {
   server.get(
     '/api/users/:idUser/articles',
     usersController.userExists,
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     usersController.getArticlesByUser
   );
   //GET articles by package (articlesPackages)
@@ -167,15 +177,10 @@ const setupRoutes = (server: Express) => {
   // POST completed article by user
   server.post(
     '/api/users/:idUser/completedArticles',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     usersController.addCompletedArticleByUser
   );
-  // POST completed article by user
-  server.post(
-    '/api/users/:idUser/completedArticles',
-    authController.getCurrentSession,
-    usersController.addCompletedArticleByUser
-  );
+
   // DELETE completedArticles by user
   server.delete(
     '/api/users/:idUser/completedArticles',
@@ -362,6 +367,18 @@ const setupRoutes = (server: Express) => {
   server.put('/api/articlescategories/:idArtCat', articlescategoriesController.updateArtCat);
   // DELETE ArtCat
   server.delete('/api/articlescategories/:idArtCat', articlescategoriesController.deleteArtCat);
+
+    ///// PACKAGES CATEGORIES (ONLY FOR REACT ADMIN !) /////
+  // GET all PackCat
+  server.get('/api/packagescategories', packagescategoriesController.getAllPackCat);
+  // GET PackCat by id
+  server.get('/api/packagescategories/:idPackCat', packagescategoriesController.getOnePackCat);
+  // POST PackCat
+  server.post('/api/packagescategories', packagescategoriesController.addPackCat);
+  // PUT PackCat
+  server.put('/api/packagescategories/:idPackCat', packagescategoriesController.updatePackCat);
+  // DELETE PackCat
+  server.delete('/api/packagescategories/:idPackCat', packagescategoriesController.deletePackCat);
 };
 
 export default setupRoutes;
