@@ -8,7 +8,7 @@ import { ResultSetHeader } from 'mysql2';
 const getAllArtPack = async () : Promise<IArticlePackage[]> => {
     const results = await connection
     .promise()
-    .query<IArticlePackage[]>('SELECT * FROM articlesPackages ORDER BY idArticle');
+    .query<IArticlePackage[]>('SELECT * FROM articlesPackages ORDER BY idPackage');
     return results[0];
 };
 

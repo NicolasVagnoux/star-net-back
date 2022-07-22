@@ -367,13 +367,13 @@ const setupRoutes = (server: Express) => {
   ///// ARTICLES PACKAGES (ONLY FOR REACT ADMIN !) /////
   // GET all ArtPack
   server.get('/api/articlespackages', articlespackagesController.getAllArtPack);
-  // GET ArtCat by id
+  // GET ArtPack by id
   server.get('/api/articlespackages/:idArtPack', articlespackagesController.getOneArtPack);
-  // POST ArtCat
+  // POST ArtPack
   server.post('/api/articlespackages', articlespackagesController.addArtPack);
-  // PUT ArtCat
+  // PUT ArtPack
   server.put('/api/articlespackages/:idArtPack', articlespackagesController.updateArtPack);
-  // DELETE ArtCat
+  // DELETE ArtPack
   server.delete('/api/articlespackages/:idArtPack', articlespackagesController.deleteArtPack);
 };
 
