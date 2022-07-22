@@ -504,7 +504,7 @@ const deleteFollowedPackages = async (
   }
 };
 
-// DELETE all followedpackages by user
+// [MIDDLEWARE] DELETE all followedpackages by user
 const deleteAllFollowedPackages = (async (
   req: Request,
   res: Response,
