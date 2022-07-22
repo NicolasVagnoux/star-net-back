@@ -103,7 +103,7 @@ const articlePackageExists = (async (
   }
 }) as RequestHandler;
 
-// GET packages
+// GET all packages
 const getAllPackages = (async (
   req: Request,
   res: Response,
