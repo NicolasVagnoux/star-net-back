@@ -11,6 +11,7 @@ import IBookmark from '../interfaces/IBookmark';
 import IComment from '../interfaces/IComment';
 import ICompletedArticle from '../interfaces/ICompletedArticle';
 import IFollowedPackage from '../interfaces/IFollowedPackage';
+import bookmark from '../models/bookmark';
 
 // [MIDDLEWARE] Check if user exists
 const userExists = (async (req: Request, res: Response, next: NextFunction) => {
@@ -36,14 +37,15 @@ const validateUser = (req: Request, res: Response, next: NextFunction) => {
   const errors = Joi.object({
     firstName: Joi.string().max(80).presence(required),
     lastName: Joi.string().max(80).presence(required),
-    phoneNumber: Joi.string().max(40).optional(),
+    phoneNumber: [Joi.string().max(40).optional(), Joi.allow(null)],
     email: Joi.string().email().max(150).presence(required),
-    userPicture: Joi.string().max(500).optional(),
+    userPicture: [Joi.string().max(500).optional(), Joi.allow(null)],
     password: Joi.string().min(6).max(50).presence(required),
     idTheme: Joi.number().min(1).max(10).optional(),
     idLanguage: Joi.number().min(1).max(10).optional(),
-    idRight: Joi.number().min(1).max(10).optional(),
+    isAdmin: Joi.number().min(0).max(1).optional(),
     id: Joi.number().optional(),
+    registrationDate: Joi.date().optional(),
   }).validate(req.body, { abortEarly: false }).error;
   if (errors) {
     next(new ErrorHandler(422, errors.message));
@@ -79,6 +81,11 @@ const getAllUsers = (async (
 ) => {
   try {
     const users = await User.getAllUsers();
+    // react admin
+    res.setHeader(
+      'Content-Range',
+      `users : 0-${users.length}/${users.length + 1}`
+    );
     return res.status(200).json(users);
   } catch (err) {
     next(err);
@@ -112,7 +119,7 @@ const getArticlesByUser = async (
 };
 
 //GET bookmark by user and article
-const getBookmarkByUserAndArticle = async (
+const getBookmarkByUserAndArticle = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -127,7 +134,22 @@ const getBookmarkByUserAndArticle = async (
   } catch (err) {
     next(err);
   }
-};
+}) as RequestHandler;
+
+// GET all bookmarks by user
+const getBookmarksByUser = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const bookmarks = await bookmark.getAllBookmarksByUser(Number(idUser));
+    return res.status(200).json(bookmarks);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
 
 //GET completed by user and article
 const getCompletedArticlesByUserAndArticle = async (
@@ -147,6 +169,41 @@ const getCompletedArticlesByUserAndArticle = async (
   }
 };
 
+//GET completed by user
+const getCompletedArticlesByUser = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const completedArticle = await Article.getCompletedArticlesByUser(
+      Number(idUser)
+    );
+    return res.status(200).json(completedArticle);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
+// GET followed by user and packages (followedPackages)
+const getFollowedPackagesByUserAndPackage = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser, idPackage } = req.params; // le params récupéré dans la requête est un string
+    const packages = await Package.getFollowedPackageByUser(
+      Number(idUser),
+      Number(idPackage)
+    ); // conversion avec Number du string en number
+    return res.status(200).json(packages);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
 // GET packages by user (followedPackages)
 const getPackagesByUser = async (
   req: Request,
@@ -155,7 +212,7 @@ const getPackagesByUser = async (
 ) => {
   try {
     const { idUser } = req.params; // le params récupéré dans la requête est un string
-    const packages = await Package.getPackagesByUser(Number(idUser)); // conversion avec Number du string en number
+    const packages = await Package.getPackagesByUserId(Number(idUser)); // conversion avec Number du string en number
     return res.status(200).json(packages);
   } catch (err) {
     next(err);
@@ -174,7 +231,7 @@ const addUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 //POST bookmark by user
-const addBookmarkByUser = async (
+const addBookmarkByUser = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -188,10 +245,10 @@ const addBookmarkByUser = async (
   } catch (err) {
     next(err);
   }
-};
+}) as RequestHandler;
 
 // POST completed articles by user and package
-const addCompletedArticleByUser = async (
+const addCompletedArticleByUser = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -208,7 +265,7 @@ const addCompletedArticleByUser = async (
   } catch (err) {
     next(err);
   }
-};
+}) as RequestHandler;
 
 // POST followed packages by user
 const addFollowedPackagesByUser = async (
@@ -230,8 +287,57 @@ const addFollowedPackagesByUser = async (
   }
 };
 
+// DELETE followed packages by user by package
+const deleteFollowedPackagesByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser, idPackage } = req.params;
+    const followedPackageDeleted =
+      await Package.deleteFollowedPackageByUserAndPackage(
+        Number(idUser),
+        Number(idPackage)
+      ); //boolean
+    followedPackageDeleted ? res.sendStatus(204) : res.sendStatus(500);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// GET all comments
+const getComment = (async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const comments = await Comment.getAllComments();
+    // react-admin
+    res.setHeader(
+      'Content-Range',
+      `users : 0-${comments.length}/${comments.length + 1}`
+    );
+    return res.status(200).json(comments);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
+//GET comment by id
+const getCommentById = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idComment } = req.params;
+    const comment = await Comment.getCommentById(Number(idComment));
+    comment ? res.status(200).json(comment) : res.sendStatus(404);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
 //POST comment by user
-const addCommentByUser = async (
+const addCommentByUser = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -245,7 +351,49 @@ const addCommentByUser = async (
   } catch (err) {
     next(err);
   }
-};
+}) as RequestHandler;
+
+// PUT comment
+const updateComment = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const { idComment } = req.params;
+    const commentUpdated = await Comment.updateCommentByUser(Number(idUser));
+    console.log(idComment);
+    if (commentUpdated) {
+      const comment = await Comment.getCommentByUser();
+      res.status(200).send(comment);
+    } else {
+      throw new ErrorHandler(500, 'Comment cannot be updated');
+    }
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
+// DELETE faq
+const deleteComment = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idComment } = req.params;
+    const comment = await Comment.getCommentById(Number(idComment));
+    const commentDeleted = await Comment.deleteComment(Number(idComment)); //faqDelected => boolean
+    if (commentDeleted) {
+      res.status(200).send(comment); //needed by react-admin
+    } else {
+      throw new ErrorHandler(500, 'Comment cannot be deleted');
+    }
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
 
 //PUT user
 const updateUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -300,8 +448,27 @@ const deleteBookmarkByUser = async (
   }
 };
 
+// DELETE all bookmarks by user
+const deleteAllBookmarksByUser = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const allBookmarksDeleted = await Bookmark.deleteAllBookmarks(
+      Number(idUser)
+    );
+
+    // boolean
+    allBookmarksDeleted ? next() : res.sendStatus(500);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
 // DELETE completedArticles by user
-const deleteCompletedArticles = async (
+const deleteCompletedArticles = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -311,11 +478,49 @@ const deleteCompletedArticles = async (
     const completedArticlesDeleted = await Article.deleteCompletedArticles(
       Number(idUser)
     );
-    completedArticlesDeleted ? res.sendStatus(204) : res.sendStatus(500);
+
+    completedArticlesDeleted ? next() : res.sendStatus(500);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
+
+// DELETE followedpackages by user by package
+const deleteFollowedPackages = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser, idPackage } = req.params;
+    const followedPackagesDeleted =
+      await Package.deleteFollowedPackageByUserAndPackage(
+        Number(idUser),
+        Number(idPackage)
+      );
+    followedPackagesDeleted ? res.sendStatus(204) : res.sendStatus(500);
   } catch (err) {
     next(err);
   }
 };
+
+// [MIDDLEWARE] DELETE all followedpackages by user
+const deleteAllFollowedPackages = (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { idUser } = req.params;
+    const allFollowedPackagesDeleted = await Package.deleteAllFollowedPackages(
+      Number(idUser)
+    );
+
+    allFollowedPackagesDeleted ? next() : res.sendStatus(500);
+  } catch (err) {
+    next(err);
+  }
+}) as RequestHandler;
 
 export default {
   userExists,
@@ -325,15 +530,26 @@ export default {
   getUserById,
   getArticlesByUser,
   getBookmarkByUserAndArticle,
+  getBookmarksByUser,
+  deleteAllBookmarksByUser,
   getCompletedArticlesByUserAndArticle,
+  getCompletedArticlesByUser,
   getPackagesByUser,
+  getFollowedPackagesByUserAndPackage,
   addUser,
+  getComment,
   addCommentByUser,
+  updateComment,
   addBookmarkByUser,
   addCompletedArticleByUser,
   addFollowedPackagesByUser,
+  deleteFollowedPackagesByUser,
   updateUser,
   deleteUser,
   deleteBookmarkByUser,
   deleteCompletedArticles,
+  deleteFollowedPackages,
+  deleteAllFollowedPackages,
+  getCommentById,
+  deleteComment,
 };

@@ -5,15 +5,19 @@ import { ResultSetHeader } from 'mysql2';
 
 /////// ARTICLES //
 // get articles //
-const getAllArticles = async (titleFilter  = '', tagFilter  = ''): Promise<IArticle[]> => {
-  let sql = `SELECT articles.id, title, idUser, mainImage, mainContent, DATE_FORMAT(creationDate, '%d/%m/%Y') AS creationDate, DATE_FORMAT(lastUpdateDate, '%d/%m/%Y') AS lastUpdateDate FROM articles`;
-  const sqlValues : string[] = [];
-  if(tagFilter) {
-    sql += ' INNER JOIN articlesCategories ON articles.id = articlesCategories.idArticle WHERE articlesCategories.idCategory = ?'
+const getAllArticles = async (
+  titleFilter = '',
+  tagFilter = ''
+): Promise<IArticle[]> => {
+  let sql = `SELECT articles.id, title, idUser, mainImage, mainContent, creationDate, lastUpdateDate FROM articles`;
+  const sqlValues: string[] = [];
+  if (tagFilter) {
+    sql +=
+      ' INNER JOIN articlesCategories ON articles.id = articlesCategories.idArticle WHERE articlesCategories.idCategory = ?';
     sqlValues.push(tagFilter);
   }
-  if(titleFilter) {
-    if(tagFilter) {
+  if (titleFilter) {
+    if (tagFilter) {
       sql += ` AND articles.title LIKE ?`;
     } else {
       sql += ` WHERE title LIKE ?`;
@@ -29,7 +33,7 @@ const getArticleById = async (idArticle: number): Promise<IArticle> => {
   const [results] = await connection
     .promise()
     .query<IArticle[]>(
-      'SELECT id, title, idUser, mainImage, mainContent, DATE_FORMAT(creationDate, "%d/%m/%Y") AS creationDate, DATE_FORMAT(lastUpdateDate, "%d/%m/%Y") AS lastUpdateDate FROM articles WHERE id = ?',
+      'SELECT id, title, idUser, mainImage, mainContent, creationDate, lastUpdateDate FROM articles WHERE id = ?',
       [idArticle]
     );
   return results[0];
@@ -40,7 +44,7 @@ const getArticlesByUser = async (idUser: number): Promise<IArticle[]> => {
   const results = await connection
     .promise()
     .query<IArticle[]>(
-      'SELECT a.id, a.title, a.idUser, a.mainImage, a.mainContent, DATE_FORMAT(a.creationDate, "%d/%m/%Y") AS creationDate, DATE_FORMAT(a.lastUpdateDate, "%d/%m/%Y") AS lastUpdateDate FROM articles a INNER JOIN bookmarks ON a.id = bookmarks.idArticle WHERE bookmarks.idUser = ?',
+      'SELECT a.id, a.title, a.idUser, a.mainImage, a.mainContent, creationDate, lastUpdateDate FROM articles a INNER JOIN bookmarks ON a.id = bookmarks.idArticle WHERE bookmarks.idUser = ?',
       [idUser]
     );
   return results[0];
@@ -51,7 +55,7 @@ const getArticlesByPackage = async (idPackage: number): Promise<IArticle[]> => {
   const results = await connection
     .promise()
     .query<IArticle[]>(
-      'SELECT a.id, a.title, a.idUser, a.mainImage, a.mainContent, DATE_FORMAT(a.creationDate, "%d/%m/%Y") AS creationDate, DATE_FORMAT(a.lastUpdateDate, "%d/%m/%Y") AS lastUpdateDate FROM articles a INNER JOIN articlesPackages ON a.id = articlesPackages.idArticle WHERE articlesPackages.idPackage = ?',
+      'SELECT a.id, a.title, a.idUser, a.mainImage, a.mainContent, creationDate, lastUpdateDate FROM articles a INNER JOIN articlesPackages ON a.id = articlesPackages.idArticle WHERE articlesPackages.idPackage = ?',
       [idPackage]
     );
   return results[0];
@@ -67,6 +71,19 @@ const getCompletedArticlesByUserAndArticle = async (
     .query<ICompletedArticle[]>(
       'SELECT * FROM completedArticles WHERE idUser = ? AND idArticle = ?',
       [idUser, idArticle]
+    );
+  return results[0];
+};
+
+// GET completedArticle by user
+const getCompletedArticlesByUser = async (
+  idUser: number
+): Promise<ICompletedArticle[]> => {
+  const results = await connection
+    .promise()
+    .query<ICompletedArticle[]>(
+      'SELECT * FROM completedArticles WHERE idUser = ?',
+      [idUser]
     );
   return results[0];
 };
@@ -111,7 +128,6 @@ const addArticleByPackage = async (
 };
 
 // POST completed article by user and package
-
 const addCompletedArticleByUser = async (
   idUser: number,
   completedArticle: ICompletedArticle
@@ -186,7 +202,7 @@ const deleteCompletedArticles = async (idUser: number): Promise<boolean> => {
     .query<ResultSetHeader>('DELETE FROM completedarticles WHERE idUser = ?', [
       idUser,
     ]);
-  return results[0].affectedRows > 0;
+  return results[0].affectedRows >= 0;
 };
 
 export default {
@@ -196,6 +212,7 @@ export default {
   getArticlesByPackage,
   getCompletedArticlesByUserAndArticle,
   getCompletedArticlesByUserAndPackage,
+  getCompletedArticlesByUser,
   addArticle,
   addArticleByPackage,
   addCompletedArticleByUser,
