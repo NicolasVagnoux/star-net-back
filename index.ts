@@ -15,6 +15,7 @@ const corsOptions: cors.CorsOptions = {
     'http://localhost:3001',
     'http://localhost:3000',
     'https://star-net-front.vercel.app',
+    'https://starnet-admin.vercel.app',
   ],
   credentials: true,
 };
@@ -40,7 +41,7 @@ setupRoutes(app);
 app.use(handleError);
 
 // Pour que nodemailer accepte de se connecter
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0 as unknown as string;
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0 as unknown as string;
 
 app.listen(port, () => {
   console.log(`server is listening on ${port}`);
