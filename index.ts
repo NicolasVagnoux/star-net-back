@@ -16,6 +16,7 @@ const corsOptions: cors.CorsOptions = {
     'http://localhost:3000',
     'https://star-net-front.vercel.app',
     'https://starnet-admin.vercel.app',
+    'https://starnet-admin-stefankolpacoff.vercel.app',
   ],
   credentials: true,
 };
