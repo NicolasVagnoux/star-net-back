@@ -17,7 +17,7 @@ Create your .env file using the example in the .env.sample file.
 
 After the successfull installation of the packages: `npm run dev`.
 
-## Contributing
+## Contributors
 
 Antso _tech_ Rakotoson<br>
 Nicolas _méca_ Vagnoux<br>
