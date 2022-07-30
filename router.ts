@@ -1,4 +1,5 @@
 import { Express } from 'express';
+import cors from 'cors';
 import articlesController from './controllers/articles';
 import usersController from './controllers/users';
 import packagesController from './controllers/packages';
@@ -55,7 +56,7 @@ const setupRoutes = (server: Express) => {
   // DELETE bookmark by user and article
   server.delete(
     '/api/users/:idUser/bookmarks/:idArticle',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     usersController.deleteBookmarkByUser
   );
   // DELETE all bookmarks by user
@@ -108,7 +109,7 @@ const setupRoutes = (server: Express) => {
   server.get(
     '/api/users/:idUser/packages/:idPackage/completedArticles',
     usersController.userExists,
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     packagesController.packageExists,
     packagesController.getCompletedArticlesByUserAndPackage
   );
@@ -116,7 +117,7 @@ const setupRoutes = (server: Express) => {
   //GET completedArticles by user and article
   server.get(
     '/api/users/:idUser/completedArticles/:idArticle',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     usersController.getCompletedArticlesByUserAndArticle
   );
 
@@ -136,7 +137,7 @@ const setupRoutes = (server: Express) => {
   // POST completed article by user
   server.post(
     '/api/users/:idUser/completedArticles',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     usersController.addCompletedArticleByUser
   );
 
@@ -165,14 +166,14 @@ const setupRoutes = (server: Express) => {
   server.get(
     '/api/users/:idUser/packages/:idPackage/completedArticles',
     usersController.userExists,
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     packagesController.packageExists,
     packagesController.getCompletedArticlesByUserAndPackage
   );
   //GET completedArticles by user and article
   server.get(
     '/api/users/:idUser/completedArticles/:idArticle',
-    authController.getCurrentSession,
+    // authController.getCurrentSession,
     usersController.getCompletedArticlesByUserAndArticle
   );
   // POST completed article by user
@@ -312,7 +313,7 @@ const setupRoutes = (server: Express) => {
 
 
   ///// CONTACT FORM /////
-  server.post('/api/contact', contactController.sendMail);
+  server.post('/api/contact', cors(), contactController.sendMail);
 
   ///// FAQ /////
   // GET all faqs

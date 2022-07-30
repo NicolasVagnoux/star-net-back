@@ -152,7 +152,7 @@ const getBookmarksByUser = (async (
 }) as RequestHandler;
 
 //GET completed by user and article
-const getCompletedArticlesByUserAndArticle = async (
+const getCompletedArticlesByUserAndArticle = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -167,7 +167,7 @@ const getCompletedArticlesByUserAndArticle = async (
   } catch (err) {
     next(err);
   }
-};
+}) as RequestHandler;
 
 //GET completed by user
 const getCompletedArticlesByUser = (async (
@@ -431,7 +431,7 @@ const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 //DELETE bookmark by user
-const deleteBookmarkByUser = async (
+const deleteBookmarkByUser = (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -446,7 +446,7 @@ const deleteBookmarkByUser = async (
   } catch (err) {
     next(err);
   }
-};
+}) as RequestHandler;
 
 // DELETE all bookmarks by user
 const deleteAllBookmarksByUser = (async (
