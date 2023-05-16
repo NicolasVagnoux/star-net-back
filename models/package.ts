@@ -15,7 +15,7 @@ const getAllPackages = async (): Promise<IPackage[]> => {
 const getAllPackagesExcludingUserConnected = async (
   idUser: number
 ): Promise<IPackage[]> => {
-  const sql = `SELECT * FROM packages WHERE id NOT IN (SELECT idPackage from followedpackages WHERE idUser = ?)`;
+  const sql = `SELECT * FROM packages WHERE id NOT IN (SELECT idPackage from followedPackages WHERE idUser = ?)`;
   const results = await connection.promise().query<IPackage[]>(sql, [idUser]);
   return results[0];
 };
@@ -113,7 +113,7 @@ const addFollowedPackagesByUser = async (
   const results = await connection
     .promise()
     .query<ResultSetHeader>(
-      'INSERT INTO followedpackages (idUser, idPackage) VALUES (?, ?)',
+      'INSERT INTO followedPackages (idUser, idPackage) VALUES (?, ?)',
       [idUser, followedPackage.idPackage]
     );
   return results[0].insertId;
@@ -135,7 +135,7 @@ const deleteFollowedPackageByUserAndPackage = async (
   const results = await connection
     .promise()
     .query<ResultSetHeader>(
-      'DELETE FROM followedpackages WHERE idUser = ? AND idPackage = ?',
+      'DELETE FROM followedPackages WHERE idUser = ? AND idPackage = ?',
       [idUser, idPackage]
     );
   return results[0].affectedRows > 0;
@@ -145,7 +145,7 @@ const deleteFollowedPackageByUserAndPackage = async (
 const deleteAllFollowedPackages = async (idUser: number): Promise<boolean> => {
   const results = await connection
     .promise()
-    .query<ResultSetHeader>('DELETE FROM followedpackages WHERE idUser = ?', [
+    .query<ResultSetHeader>('DELETE FROM followedPackages WHERE idUser = ?', [
       idUser,
     ]);
   return results[0].affectedRows >= 0;
